@@ -99,6 +99,20 @@
   cursor: pointer;
 }
 
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+.table-responsive table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table-responsive th, .table-responsive td {
+  padding: 5px;
+  text-align: left;
+  white-space: nowrap; /* supaya teks tidak patah baris */
+}
+
 .form-btn:hover {
   background-color: #218838;
 }
@@ -118,6 +132,13 @@
         border-radius: 5px;
         text-align: center;
       }
+
+      @media (max-width: 600px) {
+  .table-responsive th, .table-responsive td {
+    font-size: 12px;
+    padding: 4px;
+  }
+}
     </style>
   </head>
 
@@ -212,7 +233,8 @@
     Mengambil data laporan...
     </div>
 
-    <div id="hasilLaporan" style="margin-top:20px;"></div>
+    <!-- <div id="hasilLaporan" style="margin-top:20px;"></div> -->
+    <div id="hasilLaporan" class="table-responsive" style="margin-top:20px;"></div>
   </div>
 </div>
 
