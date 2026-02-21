@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Input Data Operasi</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+        margin: 0;
+        padding: 20px;
+      }
+      .navbar {
+  background: #1f3c88;
+  color: white;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.nav-menu button {
+  background: transparent;
+  border: none;
+  color: white;
+  margin-left: 15px;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 5px;
+}
+
+.nav-menu button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.nav-menu .active {
+  background: rgba(255,255,255,0.3);
+}
+
+      textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        resize: vertical; /* hanya bisa tarik atas-bawah */
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-weight: bold;
+        margin-top: 12px;
+        display: block;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+
+      .form-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.form-btn:hover {
+  background-color: #218838;
+}
+
+      .spinner {
+        display: none;
+        text-align: center;
+        margin-top: 15px;
+      }
+
+      .success {
+        display: none;
+        margin-top: 15px;
+        padding: 10px;
+        background: #d4edda;
+        color: #155724;
+        border-radius: 5px;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-brand">Sistem Operasi</div>
+  <div class="nav-menu">
+    <button onclick="showForm()" id="btnForm" class="active">
+      Form Input
+    </button>
+    <button onclick="showLaporan()" id="btnLaporan">
+      Laporan
+    </button>
+  </div>
+</nav>
+
+<!-- FORM SECTION -->
+<div id="formSection">
+  <div class="container">
+    <h2>Form Input Data Operasi</h2>
+
+    <form id="operasiForm">
+      <input type="hidden" name="token" value="RAHASIA123" />
+
+      <label>Rumah Sakit</label>
+        <select name="nama_rs" required>
+          <option value="">Pilih Rumah Sakit</option>
+          <option value="RS Orthopedi Siaga Raya">RS Orthopedi Siaga Raya</option>
+          <option value="RS Bethsaida">RS Bethsaida</option>
+          <option value="RS Krakatau Medika">RS Krakatau Medika</option>
+          <option value="RS Primaya">RS Primaya</option>
+        </select>
+
+      <label>Tanggal Operasi</label>
+      <input type="date" name="tanggal_operasi" required />
+
+      <label>Nama Pasien</label>
+      <input type="text" name="nama_pasien" required />
+
+      <label>Diagnosa</label>
+      <textarea name="diagnosa" required></textarea>
+
+      <label>Tindakan</label>
+      <textarea name="tindakan" required></textarea>
+
+      <label>Jaminan</label>
+      <select name="jaminan" required>
+        <option value="">Pilih Jaminan</option>
+        <option value="Umum">Umum</option>
+        <option value="Asuransi">Asuransi</option>
+        <option value="BPJS TK">BPJS TK</option>
+      </select>
+
+      <label>Jasa Operasi (Rp)</label>
+      <input type="text" id="jasa_operasi" required />
+      <input type="hidden" name="jasa_operasi" id="jasa_operasi_hidden" />
+
+      <button type="submit" class="form-btn">Simpan Data</button>
+
+      <div class="spinner" id="spinner">Menyimpan data...</div>
+      <div class="success" id="successMsg">Data berhasil disimpan!</div>
+    </form>
+  </div>
+</div>
+
+<!-- LAPORAN SECTION -->
+<div id="laporanSection" style="display:none;">
+  <div class="container">
+    <h3>Laporan Operasi</h3>
+
+    <label>Rumah Sakit</label>
+    <select id="lap_nama_rs">
+      <option value="">Pilih Rumah Sakit</option>
+      <option value="RS Orthopedi Siaga Raya">RS Orthopedi Siaga Raya</option>
+      <option value="RS Bethsaida">RS Bethsaida</option>
+      <option value="RS Krakatau Medika">RS Krakatau Medika</option>
+      <option value="RS Primaya">RS Primaya</option>
+    </select>
+    <br><br>
+
+    <label>Tanggal Awal</label>
+    <input type="date" id="lap_tgl_awal" />
+    <br><br>
+
+    <label>Tanggal Akhir</label>
+    <input type="date" id="lap_tgl_akhir" />
+    <br><br>
+
+    <button type="button" class="form-btn" onclick="getLaporan()">Generate Laporan</button>
+
+    <div class="spinner" id="spinner2" style="display:none;">
+    Mengambil data laporan...
+    </div>
+
+    <div id="hasilLaporan" style="margin-top:20px;"></div>
+  </div>
+</div>
+
+    <!-- iniscript -->
+     <script>
+function showForm() {
+  document.getElementById("formSection").style.display = "block";
+  document.getElementById("laporanSection").style.display = "none";
+
+  document.getElementById("btnForm").classList.add("active");
+  document.getElementById("btnLaporan").classList.remove("active");
+}
+
+function showLaporan() {
+  document.getElementById("formSection").style.display = "none";
+  document.getElementById("laporanSection").style.display = "block";
+
+  document.getElementById("btnForm").classList.remove("active");
+  document.getElementById("btnLaporan").classList.add("active");
+}
+</script>
+    <script>
+      const jasaInput = document.getElementById("jasa_operasi");
+      const jasaHidden = document.getElementById("jasa_operasi_hidden");
+
+      jasaInput.addEventListener("input", function (e) {
+        let value = this.value.replace(/\D/g, "");
+        jasaHidden.value = value;
+
+        if (value === "") {
+          this.value = "";
+          return;
+        }
+
+        this.value = new Intl.NumberFormat("id-ID").format(value);
+      });
+    </script>
+
+    <!-- get laporan -->
+     <script>
+        function getLaporan() {
+
+  const spinner = document.getElementById("spinner2");
+  const hasil = document.getElementById("hasilLaporan");
+
+  const nama_rs = document.getElementById("lap_nama_rs").value;
+  const tgl_awal = document.getElementById("lap_tgl_awal").value;
+  const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
+
+  if (!nama_rs || !tgl_awal || !tgl_akhir) {
+    alert("Lengkapi semua field laporan!");
+    return;
+  }
+
+  spinner.style.display = "block";
+  hasil.innerHTML = "";
+
+  fetch(
+    `${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`
+  )
+  .then(response => response.json())
+  .then(data => {
+
+    let tabel = `
+      <table border="1" cellpadding="5" cellspacing="0" width="100%">
+        <thead>
+          <tr style="background:#f2f2f2;">
+            <th>Tanggal</th>
+            <th>Pasien</th>
+            <th>Diagnosa</th>
+            <th>Tindakan</th>
+            <th>Jaminan</th>
+            <th>Jasa</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    let totalJasaHitung = 0;
+
+    if (data.detail && data.detail.length > 0) {
+      data.detail.forEach(row => {
+        let jasa = Number(row.jasa) || 0;
+        totalJasaHitung += jasa;
+
+        tabel += `
+          <tr>
+            <td>${row.tanggal}</td>
+            <td>${row.pasien}</td>
+            <td>${row.diagnosa}</td>
+            <td>${row.tindakan}</td>
+            <td>${row.jaminan}</td>
+            <td style="text-align:right;">Rp ${jasa.toLocaleString()}</td>
+          </tr>
+        `;
+      });
+    } else {
+      tabel += `
+        <tr>
+          <td colspan="6" style="text-align:center;">Tidak ada data</td>
+        </tr>
+      `;
+    }
+
+    tabel += `
+      <tr>
+        <td colspan="5" style="text-align:right; font-weight:bold;">TOTAL JASA</td>
+        <td style="text-align:right; font-weight:bold;">
+          Rp ${totalJasaHitung.toLocaleString()}
+        </td>
+      </tr>
+    </tbody></table>
+    `;
+
+    hasil.innerHTML = `
+        <div style="text-align:right; margin-top:10px;">
+        <button onclick="downloadExcel()"
+        style="padding:6px 14px; cursor:pointer;">
+        Download Excel
+        </button>
+         </div>
+      <h3 style="margin-bottom:5px;">Laporan ${nama_rs}</h3>
+      <b>Periode :</b> ${tgl_awal} s/d ${tgl_akhir}
+      <hr>
+
+      <b>Total Operasi :</b> ${data.total_operasi}<br><br>
+
+      <b>Rincian Jaminan :</b><br>
+      Umum : ${data.umum}<br>
+      Asuransi : ${data.asuransi}<br>
+      BPJS TK : ${data.bpjs}<br><br>
+
+      <b>Total Jasa Operasi : Rp ${totalJasaHitung.toLocaleString()}</b>
+      <br><br>
+
+      ${tabel}
+    `;
+  })
+  .catch(err => {
+    alert("Gagal mengambil laporan.");
+    console.error(err);
+  })
+  .finally(() => {
+    spinner.style.display = "none";
+  });
+}
+     </script>
+    <!-- <script>
+      function getLaporan() {
+        const nama_rs = document.getElementById("lap_nama_rs").value;
+        const tgl_awal = document.getElementById("lap_tgl_awal").value;
+        const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
+
+        if (!nama_rs || !tgl_awal || !tgl_akhir) {
+          alert("Lengkapi semua field laporan!");
+          return;
+        }
+
+        fetch(
+          `${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`,
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            let tabel = `
+        <table border="1" cellpadding="5" cellspacing="0" width="100%">
+          <thead>
+            <tr style="background:#f2f2f2;">
+              <th>Tanggal</th>
+              <th>Pasien</th>
+              <th>Diagnosa</th>
+              <th>Tindakan</th>
+              <th>Jaminan</th>
+              <th>Jasa</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+            let totalJasaHitung = 0;
+
+            if (data.detail && data.detail.length > 0) {
+              data.detail.forEach((row) => {
+                let jasa = Number(row.jasa) || 0;
+                totalJasaHitung += jasa;
+
+                tabel += `
+            <tr>
+              <td>${row.tanggal}</td>
+              <td>${row.pasien}</td>
+              <td>${row.diagnosa}</td>
+              <td>${row.tindakan}</td>
+              <td>${row.jaminan}</td>
+              <td style="text-align:right;">Rp ${jasa.toLocaleString()}</td>
+            </tr>
+          `;
+              });
+            } else {
+              tabel += `
+          <tr>
+            <td colspan="6" style="text-align:center;">Tidak ada data</td>
+          </tr>
+        `;
+            }
+
+            // Tambah baris TOTAL di bawah tabel
+            tabel += `
+        <tr>
+          <td colspan="5" style="text-align:right; font-weight:bold;">TOTAL JASA</td>
+          <td style="text-align:right; font-weight:bold;">
+            Rp ${totalJasaHitung.toLocaleString()}
+          </td>
+        </tr>
+      `;
+
+            tabel += `</tbody></table>`;
+
+            document.getElementById("hasilLaporan").innerHTML = `
+  <div style="text-align:right; margin-top:10px;">
+    <button onclick="downloadExcel()" 
+      style="padding:6px 14px; cursor:pointer;">
+      Download Excel
+    </button>
+  </div>
+  <hr>
+    <h3 style="margin-bottom:5px;">Laporan ${nama_rs}</h3>
+  <b>Periode :</b> ${tgl_awal} s/d ${tgl_akhir}
+  <hr>
+
+  <b>Total Operasi :</b> ${data.total_operasi}<br><br>
+
+  <b>Rincian Jaminan :</b><br>
+  Umum : ${data.umum}<br>
+  Asuransi : ${data.asuransi}<br>
+  BPJS TK : ${data.bpjs}<br><br>
+
+  <b>Total Jasa Operasi : Rp ${totalJasaHitung.toLocaleString()}</b>
+  <br><br>
+
+  ${tabel}
+`;
+          })
+          .catch((err) => {
+            alert(
+              "Gagal mengambil laporan. Pastikan Apps Script sudah di-deploy ulang.",
+            );
+            console.error(err);
+          });
+      }
+    </script> -->
+    <!-- <script>
+      function downloadExcel() {
+        const nama_rs = document.getElementById("lap_nama_rs").value;
+        const tgl_awal = document.getElementById("lap_tgl_awal").value;
+        const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
+
+        const hasil = document.getElementById("hasilLaporan");
+        const table = document.querySelector("table");
+
+        // Ambil total dari ringkasan
+        const totalOperasi = hasil.innerHTML.match(/Total Operasi : (\d+)/)[1];
+        const umum = hasil.innerHTML.match(/Umum : (\d+)/)[1];
+        const asuransi = hasil.innerHTML.match(/Asuransi : (\d+)/)[1];
+        const bpjs = hasil.innerHTML.match(/BPJS TK : (\d+)/)[1];
+        const totalJasaRingkasan = hasil.innerHTML.match(/Rp ([\d,]+)/)[1];
+
+        // Hitung total dari tabel (kolom terakhir)
+        let totalJasa = 0;
+        let rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach((row) => {
+          let jasaText = row.cells[5].innerText.replace(/[^\d]/g, "");
+          totalJasa += parseInt(jasaText || 0);
+        });
+
+        // Tambahkan baris TOTAL ke tabel clone
+        let tableClone = table.cloneNode(true);
+        let tbody = tableClone.querySelector("tbody");
+
+        let totalRow = tbody.insertRow();
+        totalRow.innerHTML = `
+    <td colspan="5" style="text-align:right; font-weight:bold;">TOTAL JASA</td>
+    <td style="font-weight:bold;">Rp ${totalJasa.toLocaleString()}</td>
+  `;
+
+        let header = `
+    <h2>LAPORAN OPERASI</h2>
+    <b>${nama_rs}</b><br>
+    Periode : ${tgl_awal} s/d ${tgl_akhir}<br><br>
+
+    Total Operasi : ${totalOperasi}<br>
+    Umum : ${umum}<br>
+    Asuransi : ${asuransi}<br>
+    BPJS TK : ${bpjs}<br>
+    Total Jasa Operasi : Rp ${totalJasaRingkasan}<br><br>
+    <hr>
+  `;
+
+        let html = header + tableClone.outerHTML;
+
+        let blob = new Blob([html], { type: "application/vnd.ms-excel" });
+        let url = URL.createObjectURL(blob);
+
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = "Laporan_Operasi.xls";
+        a.click();
+
+        URL.revokeObjectURL(url);
+      }
+    </script> -->
+    <script>
+        function downloadExcel() {
+
+  const nama_rs = document.getElementById("lap_nama_rs").value;
+  const tgl_awal = document.getElementById("lap_tgl_awal").value;
+  const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
+
+  const table = document.querySelector("#hasilLaporan table");
+
+  if (!table) {
+    alert("Tidak ada data untuk didownload.");
+    return;
+  }
+
+  let header = `
+    <h2>LAPORAN OPERASI</h2>
+    <b>${nama_rs}</b><br>
+    Periode : ${tgl_awal} s/d ${tgl_akhir}<br><br>
+    <hr>
+  `;
+
+  let html = header + table.outerHTML;
+
+  let blob = new Blob([html], { type: "application/vnd.ms-excel" });
+  let url = URL.createObjectURL(blob);
+
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "Laporan_Operasi.xls";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+}
+    </script>
+
+    <script>
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbzj6ZrV4IqO32Kv8Efu7GVtByA15tgkm8x6_D3hLhPj-QG394megfVtzTAM4cHPk1L-/exec";
+
+      document
+        .getElementById("operasiForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const spinner = document.getElementById("spinner");
+          const successMsg = document.getElementById("successMsg");
+
+          spinner.style.display = "block";
+          successMsg.style.display = "none";
+
+          const formData = new FormData(this);
+
+          fetch(SCRIPT_URL, {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.result === "success") {
+                this.reset();
+                successMsg.style.display = "block";
+              } else {
+                alert("Gagal menyimpan data.");
+              }
+            })
+            .catch((err) => {
+              alert("Terjadi kesalahan koneksi.");
+              console.error(err);
+            })
+            .finally(() => {
+              spinner.style.display = "none";
+            });
+        });
+    </script>
+  </body>
+</html>
