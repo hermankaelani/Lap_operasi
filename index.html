@@ -6,12 +6,104 @@
     <title>Input Data Operasi</title>
 
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f9;
-        margin: 0;
-        padding: 20px;
-      }
+body{
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  margin: 0;
+  padding: 20px;
+  }
+  
+#mainSection{
+  display:none;
+}
+#loginWrapper{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1f3c88, #3b82f6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+#loginSection{
+  background: white;
+  padding: 35px;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+#loginSection h3{
+  margin-bottom: 25px;
+  color: #1f3c88;
+}
+
+#loginSection input{
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+#loginSection input:focus{
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 5px rgba(59,130,246,0.4);
+}
+
+#loginSection button{
+  width: 100%;
+  padding: 12px;
+  background: #1f3c88;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#loginSection button:hover{
+  background: #16306b;
+}
+
+#loginSection button:disabled{
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.spinnerlogin{
+  margin-top: 15px;
+  display: none;
+}
+
+.spinnerlogin div{
+  width: 25px;
+  height: 25px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #1f3c88;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin{
+  0%{ transform: rotate(0deg); }
+  100%{ transform: rotate(360deg); }
+}
+
+@keyframes fadeIn{
+  from{ opacity: 0; transform: translateY(-10px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
       .navbar {
   background: #1f3c88;
   color: white;
@@ -142,6 +234,21 @@
     </style>
   </head>
 
+  <div id="loginWrapper">
+    <div id="loginSection">
+      <h3>Login Sistem Laporan Operasi</h3>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button id="loginBtn" onclick="login()">Login</button>
+
+      <div class="spinnerlogin" id="spinnerlogin">
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+<div id="mainSection" style="display:none;">
+
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-brand">Sistem Operasi</div>
@@ -151,6 +258,9 @@
     </button>
     <button onclick="showLaporan()" id="btnLaporan">
       Laporan
+    </button>
+    <button onclick="logout()" style="background:#dc3545;">
+      Logout
     </button>
   </div>
 </nav>
@@ -233,12 +343,67 @@
     Mengambil data laporan...
     </div>
 
-    <!-- <div id="hasilLaporan" style="margin-top:20px;"></div> -->
     <div id="hasilLaporan" class="table-responsive" style="margin-top:20px;"></div>
   </div>
 </div>
+</div>
 
     <!-- iniscript -->
+ <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script>
+function login(){
+
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const btn = document.getElementById("loginBtn");
+  const spinner = document.getElementById("spinnerlogin");
+
+  if(!username || !password){
+    alert("Username dan Password wajib diisi");
+    return;
+  }
+
+  // 🔄 Aktifkan loading
+  btn.disabled = true;
+  spinner.style.display = "block";
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: new URLSearchParams({
+      action: "login",
+      username: username,
+      password: password
+    })
+  })
+  .then(res => res.json())
+  .then(res => {
+
+    btn.disabled = false;
+    spinner.style.display = "none";
+
+    if(res.result === "success"){
+
+      startAutoLogout();
+
+      sessionStorage.setItem("login", "true");
+      sessionStorage.setItem("role", res.role);
+      sessionStorage.setItem("username", res.username);
+
+      document.getElementById("loginWrapper").style.display = "none";
+      document.getElementById("mainSection").style.display = "block";
+
+    } else {
+      alert("Username atau Password salah");
+    }
+
+  })
+  .catch(err => {
+    btn.disabled = false;
+    spinner.style.display = "none";
+    alert("Terjadi kesalahan koneksi.");
+  });
+}
+</script>
      <script>
 function showForm() {
   document.getElementById("formSection").style.display = "block";
@@ -275,7 +440,14 @@ function showLaporan() {
 
     <!-- get laporan -->
      <script>
-        function getLaporan() {
+      function getLaporan() 
+      {
+
+        if(sessionStorage.getItem("login") !== "true"){
+        alert("Silakan login terlebih dahulu.");
+        return;
+      }
+        
 
   const spinner = document.getElementById("spinner2");
   const hasil = document.getElementById("hasilLaporan");
@@ -288,20 +460,35 @@ function showLaporan() {
     alert("Lengkapi semua field laporan!");
     return;
   }
+  //   if (!nama_rs || !tgl_awal || !tgl_akhir) {
+  //   console.log("Filter laporan belum lengkap, skip refresh.");
+  //   spinner.style.display = "none";
+  //   return;
+  // }
 
   spinner.style.display = "block";
   hasil.innerHTML = "";
 
-  fetch(
-    `${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`
-  )
+  // function format tanggal ke DD/MM/YYYY
+  function formatTanggal(tgl) {
+    const d = new Date(tgl);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth()+1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  fetch(`${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`)
   .then(response => response.json())
   .then(data => {
+
+    window.laporanCache = data;
 
     let tabel = `
       <table border="1" cellpadding="5" cellspacing="0" width="100%">
         <thead>
           <tr style="background:#f2f2f2;">
+            <th>Aksi</th>
             <th>Tanggal</th>
             <th>Pasien</th>
             <th>Diagnosa</th>
@@ -316,13 +503,22 @@ function showLaporan() {
     let totalJasaHitung = 0;
 
     if (data.detail && data.detail.length > 0) {
+
+      // SORT TANGGAL
+      data.detail.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+
       data.detail.forEach(row => {
+
         let jasa = Number(row.jasa) || 0;
         totalJasaHitung += jasa;
 
         tabel += `
           <tr>
-            <td>${row.tanggal}</td>
+            <td>
+              <button onclick="editData('${row.id}')">Edit</button>
+              <button onclick="hapusData('${row.id}')">Hapus</button>
+            </td>
+            <td>${formatTanggal(row.tanggal)}</td>
             <td>${row.pasien}</td>
             <td>${row.diagnosa}</td>
             <td>${row.tindakan}</td>
@@ -331,7 +527,9 @@ function showLaporan() {
           </tr>
         `;
       });
+
     } else {
+
       tabel += `
         <tr>
           <td colspan="6" style="text-align:center;">Tidak ada data</td>
@@ -350,14 +548,14 @@ function showLaporan() {
     `;
 
     hasil.innerHTML = `
-        <div style="text-align:right; margin-top:10px;">
-        <button onclick="downloadExcel()"
-        style="padding:6px 14px; cursor:pointer;">
-        Download Excel
+      <div style="text-align:right; margin-top:10px;">
+        <button onclick="downloadExcel()" style="padding:6px 14px; cursor:pointer;">
+          Download Excel
         </button>
-         </div>
-      <h3 style="margin-bottom:5px;">Laporan ${nama_rs}</h3>
-      <b>Periode :</b> ${tgl_awal} s/d ${tgl_akhir}
+      </div>
+
+      <h3>Laporan ${nama_rs}</h3>
+      <b>Periode :</b> ${formatTanggal(tgl_awal)} s/d ${formatTanggal(tgl_akhir)}
       <hr>
 
       <b>Total Operasi :</b> ${data.total_operasi}<br><br>
@@ -382,244 +580,312 @@ function showLaporan() {
   });
 }
      </script>
-    <!-- <script>
-      function getLaporan() {
-        const nama_rs = document.getElementById("lap_nama_rs").value;
-        const tgl_awal = document.getElementById("lap_tgl_awal").value;
-        const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
+     <script>
+  function downloadExcel() {
 
-        if (!nama_rs || !tgl_awal || !tgl_akhir) {
-          alert("Lengkapi semua field laporan!");
-          return;
-        }
-
-        fetch(
-          `${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`,
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            let tabel = `
-        <table border="1" cellpadding="5" cellspacing="0" width="100%">
-          <thead>
-            <tr style="background:#f2f2f2;">
-              <th>Tanggal</th>
-              <th>Pasien</th>
-              <th>Diagnosa</th>
-              <th>Tindakan</th>
-              <th>Jaminan</th>
-              <th>Jasa</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-            let totalJasaHitung = 0;
-
-            if (data.detail && data.detail.length > 0) {
-              data.detail.forEach((row) => {
-                let jasa = Number(row.jasa) || 0;
-                totalJasaHitung += jasa;
-
-                tabel += `
-            <tr>
-              <td>${row.tanggal}</td>
-              <td>${row.pasien}</td>
-              <td>${row.diagnosa}</td>
-              <td>${row.tindakan}</td>
-              <td>${row.jaminan}</td>
-              <td style="text-align:right;">Rp ${jasa.toLocaleString()}</td>
-            </tr>
-          `;
-              });
-            } else {
-              tabel += `
-          <tr>
-            <td colspan="6" style="text-align:center;">Tidak ada data</td>
-          </tr>
-        `;
-            }
-
-            // Tambah baris TOTAL di bawah tabel
-            tabel += `
-        <tr>
-          <td colspan="5" style="text-align:right; font-weight:bold;">TOTAL JASA</td>
-          <td style="text-align:right; font-weight:bold;">
-            Rp ${totalJasaHitung.toLocaleString()}
-          </td>
-        </tr>
-      `;
-
-            tabel += `</tbody></table>`;
-
-            document.getElementById("hasilLaporan").innerHTML = `
-  <div style="text-align:right; margin-top:10px;">
-    <button onclick="downloadExcel()" 
-      style="padding:6px 14px; cursor:pointer;">
-      Download Excel
-    </button>
-  </div>
-  <hr>
-    <h3 style="margin-bottom:5px;">Laporan ${nama_rs}</h3>
-  <b>Periode :</b> ${tgl_awal} s/d ${tgl_akhir}
-  <hr>
-
-  <b>Total Operasi :</b> ${data.total_operasi}<br><br>
-
-  <b>Rincian Jaminan :</b><br>
-  Umum : ${data.umum}<br>
-  Asuransi : ${data.asuransi}<br>
-  BPJS TK : ${data.bpjs}<br><br>
-
-  <b>Total Jasa Operasi : Rp ${totalJasaHitung.toLocaleString()}</b>
-  <br><br>
-
-  ${tabel}
-`;
-          })
-          .catch((err) => {
-            alert(
-              "Gagal mengambil laporan. Pastikan Apps Script sudah di-deploy ulang.",
-            );
-            console.error(err);
-          });
-      }
-    </script> -->
-    <!-- <script>
-      function downloadExcel() {
-        const nama_rs = document.getElementById("lap_nama_rs").value;
-        const tgl_awal = document.getElementById("lap_tgl_awal").value;
-        const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
-
-        const hasil = document.getElementById("hasilLaporan");
-        const table = document.querySelector("table");
-
-        // Ambil total dari ringkasan
-        const totalOperasi = hasil.innerHTML.match(/Total Operasi : (\d+)/)[1];
-        const umum = hasil.innerHTML.match(/Umum : (\d+)/)[1];
-        const asuransi = hasil.innerHTML.match(/Asuransi : (\d+)/)[1];
-        const bpjs = hasil.innerHTML.match(/BPJS TK : (\d+)/)[1];
-        const totalJasaRingkasan = hasil.innerHTML.match(/Rp ([\d,]+)/)[1];
-
-        // Hitung total dari tabel (kolom terakhir)
-        let totalJasa = 0;
-        let rows = table.querySelectorAll("tbody tr");
-
-        rows.forEach((row) => {
-          let jasaText = row.cells[5].innerText.replace(/[^\d]/g, "");
-          totalJasa += parseInt(jasaText || 0);
-        });
-
-        // Tambahkan baris TOTAL ke tabel clone
-        let tableClone = table.cloneNode(true);
-        let tbody = tableClone.querySelector("tbody");
-
-        let totalRow = tbody.insertRow();
-        totalRow.innerHTML = `
-    <td colspan="5" style="text-align:right; font-weight:bold;">TOTAL JASA</td>
-    <td style="font-weight:bold;">Rp ${totalJasa.toLocaleString()}</td>
-  `;
-
-        let header = `
-    <h2>LAPORAN OPERASI</h2>
-    <b>${nama_rs}</b><br>
-    Periode : ${tgl_awal} s/d ${tgl_akhir}<br><br>
-
-    Total Operasi : ${totalOperasi}<br>
-    Umum : ${umum}<br>
-    Asuransi : ${asuransi}<br>
-    BPJS TK : ${bpjs}<br>
-    Total Jasa Operasi : Rp ${totalJasaRingkasan}<br><br>
-    <hr>
-  `;
-
-        let html = header + tableClone.outerHTML;
-
-        let blob = new Blob([html], { type: "application/vnd.ms-excel" });
-        let url = URL.createObjectURL(blob);
-
-        let a = document.createElement("a");
-        a.href = url;
-        a.download = "Laporan_Operasi.xls";
-        a.click();
-
-        URL.revokeObjectURL(url);
-      }
-    </script> -->
-    <script>
-        function downloadExcel() {
+  if (!window.laporanCache) {
+    alert("Data belum tersedia.");
+    return;
+  }
 
   const nama_rs = document.getElementById("lap_nama_rs").value;
   const tgl_awal = document.getElementById("lap_tgl_awal").value;
   const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
 
-  const table = document.querySelector("#hasilLaporan table");
+  function formatTanggal(tgl) {
+    const d = new Date(tgl);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth()+1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
 
-  if (!table) {
-    alert("Tidak ada data untuk didownload.");
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([]);
+
+  let data = [];
+
+  data.push(["LAPORAN OPERASI"]);
+  data.push([nama_rs]);
+  data.push([`Periode : ${formatTanggal(tgl_awal)} s/d ${formatTanggal(tgl_akhir)}`]);
+  data.push([]);
+
+  data.push(["Total Operasi :", window.laporanCache.total_operasi || 0]);
+  data.push(["Umum :", window.laporanCache.umum || 0]);
+  data.push(["Asuransi :", window.laporanCache.asuransi || 0]);
+  data.push(["BPJS TK :", window.laporanCache.bpjs || 0]);
+  data.push([]);
+
+  data.push(["Tanggal","Pasien","Diagnosa","Tindakan","Jaminan","Jasa"]);
+
+  let startDataRow = data.length + 1;
+
+  let tempData = [];
+
+  if (window.laporanCache.detail && window.laporanCache.detail.length > 0) {
+    window.laporanCache.detail.forEach(row => {
+      tempData.push({
+        tanggalObj: new Date(row.tanggal),
+        pasien: row.pasien,
+        diagnosa: row.diagnosa,
+        tindakan: row.tindakan,
+        jaminan: row.jaminan,
+        jasa: Number(row.jasa) || 0
+      });
+    });
+  }
+
+  // SORT TANGGAL
+  tempData.sort((a,b) => a.tanggalObj - b.tanggalObj);
+
+  tempData.forEach(item => {
+    data.push([
+      item.tanggalObj,
+      item.pasien,
+      item.diagnosa,
+      item.tindakan,
+      item.jaminan,
+      item.jasa
+    ]);
+  });
+
+  let lastRow = data.length;
+
+  // TOTAL JASA (pakai rumus)
+  data.push(["","","","","TOTAL JASA :", {f:`SUM(F${startDataRow}:F${lastRow})`}]);
+
+  let totalRowIndex = data.length - 1;
+
+  XLSX.utils.sheet_add_aoa(ws, data, {origin:"A1"});
+
+  // Lebar kolom
+  ws["!cols"] = [
+    { wch: 12 },
+    { wch: 20 },
+    { wch: 40 },
+    { wch: 40 },
+    { wch: 12 },
+    { wch: 18 }
+  ];
+
+  // FORMAT TANGGAL & UANG
+  for(let R = startDataRow-1; R <= lastRow-1; ++R){
+
+    let dateCell = XLSX.utils.encode_cell({r:R, c:0});
+    if(ws[dateCell]){
+      ws[dateCell].z = "dd/mm/yyyy";
+    }
+
+    let moneyCell = XLSX.utils.encode_cell({r:R, c:5});
+    if(ws[moneyCell]){
+      ws[moneyCell].t = 'n';
+      ws[moneyCell].z = '"Rp"#,##0';
+    }
+  }
+
+  // FORMAT TOTAL JASA JADI Rp
+  let totalCell = XLSX.utils.encode_cell({r: totalRowIndex, c:5});
+  if(ws[totalCell]){
+    ws[totalCell].t = 'n';
+    ws[totalCell].z = '"Rp"#,##0';
+  }
+
+  XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+
+  const safeRS = nama_rs.replace(/\s+/g, "_");
+  const fileName = `Laporan_${safeRS}_${tgl_awal}_sd_${tgl_akhir}.xlsx`;
+
+  XLSX.writeFile(wb, fileName);
+}
+     </script>
+     <!-- script hapus -->
+      <script>
+       function hapusData(id){
+
+        if(!confirm("Yakin ingin hapus data ini?")) return;
+
+        const formData = new FormData();
+        formData.append("token", "RAHASIA123");
+        formData.append("action", "delete");
+        formData.append("id", id);
+
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.result === "success"){
+            alert("Data berhasil dihapus");
+            getLaporan();
+          } else {
+            alert("Gagal hapus data");
+            console.log(data);
+          }
+        });
+      }
+      </script>
+      <!-- script edit -->
+       <script>
+        function editData(id){
+
+  console.log("Edit ID:", id);
+
+  if(!window.laporanCache || !window.laporanCache.detail){
+    alert("Data tidak ditemukan");
     return;
   }
 
-  let header = `
-    <h2>LAPORAN OPERASI</h2>
-    <b>${nama_rs}</b><br>
-    Periode : ${tgl_awal} s/d ${tgl_akhir}<br><br>
-    <hr>
-  `;
+  const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
 
-  let html = header + table.outerHTML;
+  if(!data){
+    alert("Data tidak ditemukan di cache");
+    return;
+  }
 
-  let blob = new Blob([html], { type: "application/vnd.ms-excel" });
-  let url = URL.createObjectURL(blob);
+  // ✅ PINDAH KE FORM SECTION
+  showForm();
 
-  let a = document.createElement("a");
-  a.href = url;
-  a.download = "Laporan_Operasi.xls";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  // isi form
+  document.querySelector('[name="nama_rs"]').value =
+    document.getElementById("lap_nama_rs").value;
 
-  URL.revokeObjectURL(url);
+  document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
+  document.querySelector('[name="nama_pasien"]').value = data.pasien;
+  document.querySelector('[name="diagnosa"]').value = data.diagnosa;
+  document.querySelector('[name="tindakan"]').value = data.tindakan;
+  document.querySelector('[name="jaminan"]').value = data.jaminan;
+
+  document.getElementById("jasa_operasi").value =
+    Number(data.jasa).toLocaleString("id-ID");
+
+  document.getElementById("jasa_operasi_hidden").value = data.jasa;
+
+  document.getElementById("operasiForm").dataset.editId = id;
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
-    </script>
+       </script>
+       <!-- script logout -->
+        <script>
+function logout(auto = false){
 
+  if(!auto){
+    if(!confirm("Yakin ingin logout?")) return;
+  }
+
+  sessionStorage.clear();
+
+  document.getElementById("mainSection").style.display = "none";
+  document.getElementById("loginWrapper").style.display = "flex"; // ⬅ INI
+}
+</script>
+
+<script>
+let logoutTimer;
+
+function startAutoLogout(){
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    alert("Session habis. Silakan login kembali.");
+    logout(true);   // ⬅ UBAH DI SINI
+  }, 30 * 60 * 1000);
+}
+
+document.addEventListener("click", startAutoLogout);
+document.addEventListener("keypress", startAutoLogout);
+</script>
+
+<script>
+window.onload = function(){
+
+  if(sessionStorage.getItem("login") === "true"){
+    document.getElementById("loginWrapper").style.display = "none";
+    document.getElementById("mainSection").style.display = "block";
+    startAutoLogout();
+  } else {
+    document.getElementById("loginWrapper").style.display = "flex"; // ⬅ INI
+    document.getElementById("mainSection").style.display = "none";
+  }
+
+}
+</script>
     <script>
       const SCRIPT_URL =
         "https://script.google.com/macros/s/AKfycbzj6ZrV4IqO32Kv8Efu7GVtByA15tgkm8x6_D3hLhPj-QG394megfVtzTAM4cHPk1L-/exec";
 
-      document
-        .getElementById("operasiForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
+      document.getElementById("operasiForm")
+      .addEventListener("submit", function (e) {
 
-          const spinner = document.getElementById("spinner");
-          const successMsg = document.getElementById("successMsg");
+        e.preventDefault();
 
-          spinner.style.display = "block";
-          successMsg.style.display = "none";
+        const spinner = document.getElementById("spinner");
+        const successMsg = document.getElementById("successMsg");
 
-          const formData = new FormData(this);
+        spinner.style.display = "block";
+        successMsg.style.display = "none";
 
-          fetch(SCRIPT_URL, {
-            method: "POST",
-            body: formData,
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.result === "success") {
-                this.reset();
-                successMsg.style.display = "block";
-              } else {
-                alert("Gagal menyimpan data.");
-              }
-            })
-            .catch((err) => {
-              alert("Terjadi kesalahan koneksi.");
-              console.error(err);
-            })
-            .finally(() => {
-              spinner.style.display = "none";
-            });
+        const formData = new FormData(this);
+        formData.append("token", "RAHASIA123");
+
+        const editId = this.dataset.editId;
+
+        if(editId){
+          formData.append("action", "update");
+          formData.append("id", editId);
+        }
+
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.result === "success") {
+
+            this.reset();
+            delete this.dataset.editId;
+
+            successMsg.style.display = "block";
+
+            // refresh hanya jika filter laporan sudah diisi
+            const nama_rs = document.getElementById("lap_nama_rs")?.value;
+            const tgl_awal = document.getElementById("lap_tgl_awal")?.value;
+            const tgl_akhir = document.getElementById("lap_tgl_akhir")?.value;
+
+            if(nama_rs && tgl_awal && tgl_akhir){
+              getLaporan();
+            }
+
+          } else {
+            alert("Gagal menyimpan data.");
+            console.log(data);
+          }
+        })
+        .catch(err => {
+          alert("Terjadi kesalahan koneksi.");
+          console.error(err);
+        })
+        .finally(() => {
+          spinner.style.display = "none";
         });
+    });
+    </script>
+    <script>
+    window.onload = function(){
+
+      if(sessionStorage.getItem("login") === "true"){
+        document.getElementById("loginWrapper").style.display = "none";
+        document.getElementById("mainSection").style.display = "block";
+        startAutoLogout();
+      } else {
+        document.getElementById("loginWrapper").style.display = "flex";
+        document.getElementById("mainSection").style.display = "none";
+      }
+
+    }
+    </script>
+
     </script>
   </body>
 </html>
