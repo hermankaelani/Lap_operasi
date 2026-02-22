@@ -230,6 +230,48 @@ body{
     font-size: 12px;
     padding: 4px;
   }
+        /* ===== NAVBAR RESPONSIVE FIX ===== */
+
+.navbar{
+  flex-wrap: nowrap;
+}
+
+.nav-menu{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.nav-menu button{
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Hilangkan scrollbar jelek di HP */
+.nav-menu::-webkit-scrollbar{
+  display: none;
+}
+
+/* Kecilkan font saat layar kecil */
+@media (max-width: 500px){
+  .nav-brand{
+    font-size: 14px;
+  }
+
+  .nav-menu button{
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+}
+
+/* Kalau layar sangat kecil, brand disembunyikan */
+@media (max-width: 400px){
+  .nav-brand{
+    display: none;
+  }
+}
 }
     </style>
   </head>
@@ -889,3 +931,4 @@ window.onload = function(){
     </script>
   </body>
 </html>
+
