@@ -230,7 +230,7 @@ body{
     font-size: 12px;
     padding: 4px;
   }
-        /* ===== NAVBAR RESPONSIVE FIX ===== */
+  /* ===== NAVBAR RESPONSIVE FIX ===== */
 
 .navbar{
   flex-wrap: nowrap;
@@ -342,6 +342,7 @@ body{
         <option value="Umum">Umum</option>
         <option value="Asuransi">Asuransi</option>
         <option value="BPJS TK">BPJS TK</option>
+        <option value="BPJS Kesehatan">BPJS Kesehatan</option>
       </select>
 
       <label>Jasa Operasi (Rp)</label>
@@ -581,7 +582,7 @@ function showLaporan() {
 
     tabel += `
       <tr>
-        <td colspan="5" style="text-align:right; font-weight:bold;">TOTAL JASA</td>
+        <td colspan="6" style="text-align:right; font-weight:bold;">TOTAL JASA</td>
         <td style="text-align:right; font-weight:bold;">
           Rp ${totalJasaHitung.toLocaleString()}
         </td>
@@ -606,6 +607,7 @@ function showLaporan() {
       Umum : ${data.umum}<br>
       Asuransi : ${data.asuransi}<br>
       BPJS TK : ${data.bpjs}<br><br>
+      BPJS Kesehatan : ${data.bpjskesehatan}<br><br>
 
       <b>Total Jasa Operasi : Rp ${totalJasaHitung.toLocaleString()}</b>
       <br><br>
@@ -656,6 +658,7 @@ function showLaporan() {
   data.push(["Umum :", window.laporanCache.umum || 0]);
   data.push(["Asuransi :", window.laporanCache.asuransi || 0]);
   data.push(["BPJS TK :", window.laporanCache.bpjs || 0]);
+  data.push(["BPJS Kesehatan :", window.laporanCache.bpjskesehatan || 0]);
   data.push([]);
 
   data.push(["Tanggal","Pasien","Diagnosa","Tindakan","Jaminan","Jasa"]);
@@ -931,4 +934,3 @@ window.onload = function(){
     </script>
   </body>
 </html>
-
