@@ -382,7 +382,6 @@ body{
     </form>
   </div>
 </div>
-
 <!-- LAPORAN SECTION -->
 <div id="laporanSection" style="display:none;">
   <div class="container">
@@ -417,7 +416,31 @@ body{
 </div>
 </div>
 
-    <!-- iniscript -->
+
+ <!-- Modal foto -->
+    <div id="modalFoto" style="
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+    justify-content:center;
+    align-items:center;
+    ">
+
+    <img id="modalFotoImg" style="
+    max-width:90%;
+    max-height:90%;
+    border-radius:8px;
+    ">
+
+    </div>
+
+
+    <!-- iniscript login -->
  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script>
     function login(){
@@ -473,6 +496,7 @@ body{
       });
     }
     </script>
+    <!-- ini show form -->
     <script>
     function showForm() {
       document.getElementById("formSection").style.display = "block";
@@ -490,6 +514,7 @@ body{
       document.getElementById("btnLaporan").classList.add("active");
     }
     </script>
+    <!-- ini form input -->
     <script>
           const jasaInput = document.getElementById("jasa_operasi");
           const jasaHidden = document.getElementById("jasa_operasi_hidden");
@@ -508,147 +533,512 @@ body{
     </script>
         <!-- get laporan -->
     <script>
-          function getLaporan() 
-          {
+      function getLaporan(){
 
-            if(sessionStorage.getItem("login") !== "true"){
-            alert("Silakan login terlebih dahulu.");
-            return;
-          }
-            
+    if(sessionStorage.getItem("login") !== "true"){
+    alert("Silakan login terlebih dahulu.");
+    return;
+    }
 
-      const spinner = document.getElementById("spinner2");
-      const hasil = document.getElementById("hasilLaporan");
+    const spinner = document.getElementById("spinner2");
+    const hasil = document.getElementById("hasilLaporan");
 
-      const nama_rs = document.getElementById("lap_nama_rs").value;
-      const tgl_awal = document.getElementById("lap_tgl_awal").value;
-      const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
+    const nama_rs = document.getElementById("lap_nama_rs").value;
+    const tgl_awal = document.getElementById("lap_tgl_awal").value;
+    const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
 
-      if (!nama_rs || !tgl_awal || !tgl_akhir) {
-        alert("Lengkapi semua field laporan!");
-        return;
+    if (!nama_rs || !tgl_awal || !tgl_akhir) {
+    alert("Lengkapi semua field laporan!");
+    return;
+    }
+
+    spinner.style.display = "block";
+    hasil.innerHTML = "";
+
+    function formatTanggal(tgl) {
+    const d = new Date(tgl);
+    const day = String(d.getDate()).padStart(2,'0');
+    const month = String(d.getMonth()+1).padStart(2,'0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+    }
+
+    fetch(`${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`)
+    .then(response => response.json())
+    .then(data => {
+
+    window.laporanCache = data;
+
+    let tabel = `
+    <table border="1" cellpadding="5" cellspacing="0" width="100%">
+    <thead>
+    <tr style="background:#f2f2f2;">
+    <th>Aksi</th>
+    <th>Tanggal</th>
+    <th>Pasien</th>
+    <th>Diagnosa</th>
+    <th>Tindakan</th>
+    <th>Jaminan</th>
+    <th>Jasa</th>
+    <th>Foto</th>
+    </tr>
+    </thead>
+    <tbody>
+    `;
+
+    let totalJasaHitung = 0;
+
+    if(data.detail && data.detail.length > 0){
+
+    data.detail.sort((a,b)=> new Date(a.tanggal) - new Date(b.tanggal));
+
+    data.detail.forEach(row => {
+
+      // console.log("FOTO RAW:", row.foto);
+      // console.log(row.foto);console.log(url);
+
+      let fotoHTML = "-";
+
+      if (row.foto) {
+
+      const fotos = row.foto.split(",");
+
+      fotoHTML = fotos.map(id => {
+
+      id = id.trim();
+
+      let thumb = "https://drive.google.com/thumbnail?id=" + id + "&sz=w120";
+      let full  = "https://lh3.googleusercontent.com/d/" + id;
+
+      return `<img src="${thumb}"
+      style="
+      width:60px;
+      height:60px;
+      object-fit:cover;
+      margin:2px;
+      border-radius:6px;
+      cursor:pointer;
+      border:1px solid #ccc;
+      "
+      loading="lazy"
+      onclick="bukaFoto('${full}')">`;
+
+      }).join("");
+
       }
-      //   if (!nama_rs || !tgl_awal || !tgl_akhir) {
-      //   console.log("Filter laporan belum lengkap, skip refresh.");
-      //   spinner.style.display = "none";
-      //   return;
+
+
+
+
+
+    // let fotoHTML = "-";
+
+    //   if(row.foto){
+
+    //   const fotos = row.foto.split(",");
+
+    //   fotoHTML = fotos.map(id => {
+
+    //   id = id.trim();
+
+    //   let url = "https://drive.google.com/uc?export=view&id=" + id;
+
+    //   return `<img src="${url}"
+    //   style="width:60px;margin:2px;border-radius:4px;cursor:pointer;border:1px solid #ccc"
+    //   onclick="bukaFoto('${url}')">`;
+
+    //   }).join("");
+
       // }
 
-      spinner.style.display = "block";
-      hasil.innerHTML = "";
+    let jasa = Number(row.jasa) || 0;
+    totalJasaHitung += jasa;
 
-      // function format tanggal ke DD/MM/YYYY
-      function formatTanggal(tgl) {
-        const d = new Date(tgl);
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth()+1).padStart(2, '0');
-        const year = d.getFullYear();
-        return `${day}/${month}/${year}`;
-      }
+    tabel += `
+    <tr>
+    <td>
+    <button onclick="editData('${row.id}')">Edit</button>
+    <button onclick="hapusData('${row.id}')">Hapus</button>
+    </td>
+    <td>${formatTanggal(row.tanggal)}</td>
+    <td>${row.pasien}</td>
+    <td>${row.diagnosa}</td>
+    <td>${row.tindakan}</td>
+    <td>${row.jaminan}</td>
+    <td style="text-align:right;">Rp ${jasa.toLocaleString()}</td>
+    <td>${fotoHTML}</td>
+    </tr>
+    `;
 
-      fetch(`${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`)
-      .then(response => response.json())
-      .then(data => {
+    });
 
-        window.laporanCache = data;
+    }else{
 
-        let tabel = `
-          <table border="1" cellpadding="5" cellspacing="0" width="100%">
-            <thead>
-              <tr style="background:#f2f2f2;">
-                <th>Aksi</th>
-                <th>Tanggal</th>
-                <th>Pasien</th>
-                <th>Diagnosa</th>
-                <th>Tindakan</th>
-                <th>Jaminan</th>
-                <th>Jasa</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
+    tabel += `
+    <tr>
+    <td colspan="8" style="text-align:center;">Tidak ada data</td>
+    </tr>
+    `;
 
-        let totalJasaHitung = 0;
+    }
 
-        if (data.detail && data.detail.length > 0) {
+    tabel += `
+    <tr>
+    <td colspan="6" style="text-align:right;font-weight:bold;">TOTAL JASA</td>
+    <td style="text-align:right;font-weight:bold;">
+    Rp ${totalJasaHitung.toLocaleString()}
+    </td>
+    <td></td>
+    </tr>
+    </tbody>
+    </table>
+    `;
 
-          // SORT TANGGAL
-          data.detail.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+    hasil.innerHTML = `
 
-          data.detail.forEach(row => {
+    <div style="text-align:right;margin-top:10px;">
+    <button onclick="downloadExcel()" style="padding:6px 14px;cursor:pointer;">
+    Download Excel
+    </button>
+    </div>
 
-            let jasa = Number(row.jasa) || 0;
-            totalJasaHitung += jasa;
+    <h3>Laporan ${nama_rs}</h3>
 
-            tabel += `
-              <tr>
-                <td>
-                  <button onclick="editData('${row.id}')">Edit</button>
-                  <button onclick="hapusData('${row.id}')">Hapus</button>
-                </td>
-                <td>${formatTanggal(row.tanggal)}</td>
-                <td>${row.pasien}</td>
-                <td>${row.diagnosa}</td>
-                <td>${row.tindakan}</td>
-                <td>${row.jaminan}</td>
-                <td style="text-align:right;">Rp ${jasa.toLocaleString()}</td>
-              </tr>
-            `;
-          });
+    <b>Periode :</b> ${formatTanggal(tgl_awal)} s/d ${formatTanggal(tgl_akhir)}
 
-        } else {
+    <hr>
 
-          tabel += `
-            <tr>
-              <td colspan="6" style="text-align:center;">Tidak ada data</td>
-            </tr>
-          `;
-        }
+    <b>Total Operasi :</b> ${data.total_operasi}<br><br>
 
-        tabel += `
-          <tr>
-            <td colspan="6" style="text-align:right; font-weight:bold;">TOTAL JASA</td>
-            <td style="text-align:right; font-weight:bold;">
-              Rp ${totalJasaHitung.toLocaleString()}
-            </td>
-          </tr>
-        </tbody></table>
-        `;
+    <b>Rincian Jaminan :</b><br>
 
-        hasil.innerHTML = `
-          <div style="text-align:right; margin-top:10px;">
-            <button onclick="downloadExcel()" style="padding:6px 14px; cursor:pointer;">
-              Download Excel
-            </button>
-          </div>
+    Umum : ${data.umum}<br>
+    Asuransi : ${data.asuransi}<br>
+    BPJS TK : ${data.bpjs}<br>
+    BPJS Kesehatan : ${data.bpjskesehatan}<br><br>
 
-          <h3>Laporan ${nama_rs}</h3>
-          <b>Periode :</b> ${formatTanggal(tgl_awal)} s/d ${formatTanggal(tgl_akhir)}
-          <hr>
+    <b>Total Jasa Operasi : Rp ${totalJasaHitung.toLocaleString()}</b>
 
-          <b>Total Operasi :</b> ${data.total_operasi}<br><br>
+    <br><br>
 
-          <b>Rincian Jaminan :</b><br>
-          Umum : ${data.umum}<br>
-          Asuransi : ${data.asuransi}<br>
-          BPJS TK : ${data.bpjs}<br><br>
-          BPJS Kesehatan : ${data.bpjskesehatan}<br><br>
+    ${tabel}
 
-          <b>Total Jasa Operasi : Rp ${totalJasaHitung.toLocaleString()}</b>
-          <br><br>
+    `;
 
-          ${tabel}
-        `;
-      })
-      .catch(err => {
-        alert("Gagal mengambil laporan.");
-        console.error(err);
-      })
-      .finally(() => {
-        spinner.style.display = "none";
-      });
+    })
+    .catch(err=>{
+    alert("Gagal mengambil laporan.");
+    console.error(err);
+    })
+    .finally(()=>{
+    spinner.style.display = "none";
+    });
+
     }
     </script>
+      
+      <!-- script hapus -->
+    <script>
+          function hapusData(id){
+
+            if(!confirm("Yakin ingin hapus data ini?")) return;
+
+            const formData = new FormData();
+            formData.append("token", "RAHASIA123");
+            formData.append("action", "delete");
+            formData.append("id", id);
+
+            fetch(SCRIPT_URL, {
+              method: "POST",
+              body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+              if(data.result === "success"){
+                alert("Data berhasil dihapus");
+                getLaporan();
+              } else {
+                alert("Gagal hapus data");
+                console.log(data);
+              }
+            });
+          }
+    </script>
+          <!-- script edit -->
+
+          <script>
+
+function editData(id){
+
+console.log("Edit ID:", id);
+
+if(!window.laporanCache || !window.laporanCache.detail){
+  alert("Data tidak ditemukan");
+  return;
+}
+
+const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
+
+if(!data){
+  alert("Data tidak ditemukan di cache");
+  return;
+}
+
+// pindah ke form
+showForm();
+
+// isi form
+document.querySelector('[name="nama_rs"]').value =
+  document.getElementById("lap_nama_rs").value;
+
+document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
+document.querySelector('[name="nama_pasien"]').value = data.pasien;
+document.querySelector('[name="diagnosa"]').value = data.diagnosa;
+document.querySelector('[name="tindakan"]').value = data.tindakan;
+document.querySelector('[name="jaminan"]').value = data.jaminan;
+
+document.getElementById("jasa_operasi").value =
+  Number(data.jasa).toLocaleString("id-ID");
+
+document.getElementById("jasa_operasi_hidden").value = data.jasa;
+
+const form = document.getElementById("operasiForm");
+form.dataset.editId = id;
+
+
+// ======================
+// TAMPILKAN FOTO LAMA
+// ======================
+
+const preview = document.getElementById("previewFoto");
+preview.innerHTML = "";
+
+let fotoArray = [];
+
+if(data.foto){
+
+fotoArray = data.foto.split(",").map(f => f.trim());
+
+fotoArray.forEach((fid,index)=>{
+
+let thumb = "https://drive.google.com/thumbnail?id=" + fid + "&sz=w200";
+let full  = "https://lh3.googleusercontent.com/d/" + fid;
+
+const box = document.createElement("div");
+box.style.position = "relative";
+box.style.display = "inline-block";
+box.style.margin = "5px";
+
+const img = document.createElement("img");
+img.src = thumb;
+img.style.width = "80px";
+img.style.height = "80px";
+img.style.objectFit = "cover";
+img.style.borderRadius = "6px";
+img.style.cursor = "pointer";
+img.style.border = "1px solid #ccc";
+
+img.onclick = function(){
+  bukaFoto(full);
+};
+
+const btn = document.createElement("div");
+btn.innerHTML = "✖";
+btn.style.position = "absolute";
+btn.style.top = "-6px";
+btn.style.right = "-6px";
+btn.style.background = "red";
+btn.style.color = "white";
+btn.style.width = "20px";
+btn.style.height = "20px";
+btn.style.borderRadius = "50%";
+btn.style.fontSize = "12px";
+btn.style.display = "flex";
+btn.style.alignItems = "center";
+btn.style.justifyContent = "center";
+btn.style.cursor = "pointer";
+
+btn.onclick = function(){
+
+fotoArray.splice(index,1);
+
+form.dataset.fotoLama = fotoArray.join(",");
+
+box.remove();
+
+};
+
+box.appendChild(img);
+box.appendChild(btn);
+
+preview.appendChild(box);
+
+});
+
+}
+
+form.dataset.fotoLama = fotoArray.join(",");
+
+}
+
+</script>
+
+
+
+    <!-- <script>
+      function editData(id){
+
+console.log("Edit ID:", id);
+
+if(!window.laporanCache || !window.laporanCache.detail){
+  alert("Data tidak ditemukan");
+  return;
+}
+
+const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
+
+if(!data){
+  alert("Data tidak ditemukan di cache");
+  return;
+}
+
+// pindah ke form
+showForm();
+
+// isi form
+document.querySelector('[name="nama_rs"]').value =
+  document.getElementById("lap_nama_rs").value;
+
+document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
+document.querySelector('[name="nama_pasien"]').value = data.pasien;
+document.querySelector('[name="diagnosa"]').value = data.diagnosa;
+document.querySelector('[name="tindakan"]').value = data.tindakan;
+document.querySelector('[name="jaminan"]').value = data.jaminan;
+
+document.getElementById("jasa_operasi").value =
+  Number(data.jasa).toLocaleString("id-ID");
+
+document.getElementById("jasa_operasi_hidden").value = data.jasa;
+
+document.getElementById("operasiForm").dataset.editId = id;
+
+
+// ======================
+// TAMPILKAN FOTO LAMA
+// ======================
+
+const preview = document.getElementById("previewFoto");
+preview.innerHTML = "";
+
+// simpan id foto lama
+document.getElementById("operasiForm").dataset.fotoLama = data.foto || "";
+
+if(data.foto){
+
+  const fotos = data.foto.split(",");
+
+  fotos.forEach(fid => {
+
+  fid = fid.trim();
+
+  let thumb = "https://drive.google.com/thumbnail?id=" + fid + "&sz=w200";
+  let full  = "https://lh3.googleusercontent.com/d/" + fid;
+
+  const img = document.createElement("img");
+
+  img.src = thumb;
+  img.style.width = "80px";
+  img.style.height = "80px";
+  img.style.objectFit = "cover";
+  img.style.margin = "5px";
+  img.style.borderRadius = "6px";
+  img.style.cursor = "pointer";
+  img.style.border = "1px solid #ccc";
+
+  img.onclick = function(){
+    bukaFoto(full);
+  };
+
+  preview.appendChild(img);
+
+  });
+
+}
+
+}
+    </script> -->
+    <!-- <script>
+      function editData(id){
+
+      console.log("Edit ID:", id);
+
+      if(!window.laporanCache || !window.laporanCache.detail){
+        alert("Data tidak ditemukan");
+        return;
+      }
+
+      const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
+
+      if(!data){
+        alert("Data tidak ditemukan di cache");
+        return;
+      }
+
+      // pindah ke form
+      showForm();
+
+      // isi form
+      document.querySelector('[name="nama_rs"]').value =
+        document.getElementById("lap_nama_rs").value;
+
+      document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
+      document.querySelector('[name="nama_pasien"]').value = data.pasien;
+      document.querySelector('[name="diagnosa"]').value = data.diagnosa;
+      document.querySelector('[name="tindakan"]').value = data.tindakan;
+      document.querySelector('[name="jaminan"]').value = data.jaminan;
+
+      document.getElementById("jasa_operasi").value =
+        Number(data.jasa).toLocaleString("id-ID");
+
+      document.getElementById("jasa_operasi_hidden").value = data.jasa;
+
+      document.getElementById("operasiForm").dataset.editId = id;
+
+      // ======================
+      // TAMPILKAN FOTO LAMA
+      // ======================
+
+      const preview = document.getElementById("previewFoto");
+      preview.innerHTML = "";
+
+      if(data.foto){
+
+        const fotos = data.foto.split(",");
+        // render foto
+        fotos.forEach(id => {
+
+        let url = "https://drive.google.com/uc?export=view&id=" + id.trim();
+
+        const img = document.createElement("img");
+        img.src = url;
+        img.style.width = "100px";
+        img.style.margin = "5px";
+        img.style.borderRadius = "6px";
+        img.style.cursor = "pointer";
+
+        img.onclick = function(){
+          bukaFoto(url);
+        };
+
+        preview.appendChild(img);
+
+        });
+      }
+
+    }
+    </script> -->
+
+      <!-- ini download report -->
     <script>
       function downloadExcel() {
 
@@ -768,74 +1158,6 @@ body{
       XLSX.writeFile(wb, fileName);
     }
     </script>
-        <!-- script hapus -->
-    <script>
-          function hapusData(id){
-
-            if(!confirm("Yakin ingin hapus data ini?")) return;
-
-            const formData = new FormData();
-            formData.append("token", "RAHASIA123");
-            formData.append("action", "delete");
-            formData.append("id", id);
-
-            fetch(SCRIPT_URL, {
-              method: "POST",
-              body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-              if(data.result === "success"){
-                alert("Data berhasil dihapus");
-                getLaporan();
-              } else {
-                alert("Gagal hapus data");
-                console.log(data);
-              }
-            });
-          }
-    </script>
-          <!-- script edit -->
-    <script>
-            function editData(id){
-
-      console.log("Edit ID:", id);
-
-      if(!window.laporanCache || !window.laporanCache.detail){
-        alert("Data tidak ditemukan");
-        return;
-      }
-
-      const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
-
-      if(!data){
-        alert("Data tidak ditemukan di cache");
-        return;
-      }
-
-      // ✅ PINDAH KE FORM SECTION
-      showForm();
-
-      // isi form
-      document.querySelector('[name="nama_rs"]').value =
-        document.getElementById("lap_nama_rs").value;
-
-      document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
-      document.querySelector('[name="nama_pasien"]').value = data.pasien;
-      document.querySelector('[name="diagnosa"]').value = data.diagnosa;
-      document.querySelector('[name="tindakan"]').value = data.tindakan;
-      document.querySelector('[name="jaminan"]').value = data.jaminan;
-
-      document.getElementById("jasa_operasi").value =
-        Number(data.jasa).toLocaleString("id-ID");
-
-      document.getElementById("jasa_operasi_hidden").value = data.jasa;
-
-      document.getElementById("operasiForm").dataset.editId = id;
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-    </script>
           <!-- script logout -->
     <script>
       function logout(auto = false){
@@ -851,6 +1173,7 @@ body{
     }
     </script>
 
+<!-- session -->
     <script>
     let logoutTimer;
 
@@ -866,6 +1189,7 @@ body{
     document.addEventListener("keypress", startAutoLogout);
     </script>
 
+<!-- ser login juga -->
     <script>
     window.onload = function(){
 
@@ -881,6 +1205,7 @@ body{
     }
     </script>
 
+<!-- foto -->
     <script>
 
       let fotoBase64List = [];
@@ -1035,5 +1360,26 @@ body{
             });
         });
     </script>
+
+    <!-- view foto -->
+     <script>
+
+      function bukaFoto(url){
+
+        const modal = document.getElementById("modalFoto");
+        const img = document.getElementById("modalFotoImg");
+
+        img.src = url;
+        modal.style.display = "flex";
+
+      }
+
+      document.getElementById("modalFoto").onclick = function(){
+        this.style.display = "none";
+      }
+
+      </script>
+
+   
   </body>
 </html>
