@@ -349,24 +349,6 @@ body{
       <input type="text" id="jasa_operasi" required />
       <input type="hidden" name="jasa_operasi" id="jasa_operasi_hidden" />
 
-      <!-- <div class="form-group">
-        <label>Upload Foto</label>
-        <input type="file" id="foto_operasi" accept="image/*" multiple>
-      </div> -->
-
-      <!-- <form id="uploadForm"
-      action="https://script.google.com/macros/s/AKfycbzfAd48N5P_uQAjacrlvSuEq9XhfCJ6EjcJrXJgDl82-SNPufovt_ig0u7M0vhXAtrt/exec"
-      method="POST"
-      enctype="multipart/form-data"
-      target="hidden_iframe">
-
-      <input type="file" name="files[]" multiple>
-
-      <button type="submit">Upload</button>
-
-      </form>
-
-      <iframe name="hidden_iframe" style="display:none;"></iframe> -->
       <div class="form-group">
       <label>Upload Foto</label>
       <input type="file" id="foto_operasi" accept="image/*" multiple>
@@ -883,161 +865,6 @@ form.dataset.fotoLama = fotoArray.join(",");
 
 </script>
 
-
-
-    <!-- <script>
-      function editData(id){
-
-console.log("Edit ID:", id);
-
-if(!window.laporanCache || !window.laporanCache.detail){
-  alert("Data tidak ditemukan");
-  return;
-}
-
-const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
-
-if(!data){
-  alert("Data tidak ditemukan di cache");
-  return;
-}
-
-// pindah ke form
-showForm();
-
-// isi form
-document.querySelector('[name="nama_rs"]').value =
-  document.getElementById("lap_nama_rs").value;
-
-document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
-document.querySelector('[name="nama_pasien"]').value = data.pasien;
-document.querySelector('[name="diagnosa"]').value = data.diagnosa;
-document.querySelector('[name="tindakan"]').value = data.tindakan;
-document.querySelector('[name="jaminan"]').value = data.jaminan;
-
-document.getElementById("jasa_operasi").value =
-  Number(data.jasa).toLocaleString("id-ID");
-
-document.getElementById("jasa_operasi_hidden").value = data.jasa;
-
-document.getElementById("operasiForm").dataset.editId = id;
-
-
-// ======================
-// TAMPILKAN FOTO LAMA
-// ======================
-
-const preview = document.getElementById("previewFoto");
-preview.innerHTML = "";
-
-// simpan id foto lama
-document.getElementById("operasiForm").dataset.fotoLama = data.foto || "";
-
-if(data.foto){
-
-  const fotos = data.foto.split(",");
-
-  fotos.forEach(fid => {
-
-  fid = fid.trim();
-
-  let thumb = "https://drive.google.com/thumbnail?id=" + fid + "&sz=w200";
-  let full  = "https://lh3.googleusercontent.com/d/" + fid;
-
-  const img = document.createElement("img");
-
-  img.src = thumb;
-  img.style.width = "80px";
-  img.style.height = "80px";
-  img.style.objectFit = "cover";
-  img.style.margin = "5px";
-  img.style.borderRadius = "6px";
-  img.style.cursor = "pointer";
-  img.style.border = "1px solid #ccc";
-
-  img.onclick = function(){
-    bukaFoto(full);
-  };
-
-  preview.appendChild(img);
-
-  });
-
-}
-
-}
-    </script> -->
-    <!-- <script>
-      function editData(id){
-
-      console.log("Edit ID:", id);
-
-      if(!window.laporanCache || !window.laporanCache.detail){
-        alert("Data tidak ditemukan");
-        return;
-      }
-
-      const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
-
-      if(!data){
-        alert("Data tidak ditemukan di cache");
-        return;
-      }
-
-      // pindah ke form
-      showForm();
-
-      // isi form
-      document.querySelector('[name="nama_rs"]').value =
-        document.getElementById("lap_nama_rs").value;
-
-      document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
-      document.querySelector('[name="nama_pasien"]').value = data.pasien;
-      document.querySelector('[name="diagnosa"]').value = data.diagnosa;
-      document.querySelector('[name="tindakan"]').value = data.tindakan;
-      document.querySelector('[name="jaminan"]').value = data.jaminan;
-
-      document.getElementById("jasa_operasi").value =
-        Number(data.jasa).toLocaleString("id-ID");
-
-      document.getElementById("jasa_operasi_hidden").value = data.jasa;
-
-      document.getElementById("operasiForm").dataset.editId = id;
-
-      // ======================
-      // TAMPILKAN FOTO LAMA
-      // ======================
-
-      const preview = document.getElementById("previewFoto");
-      preview.innerHTML = "";
-
-      if(data.foto){
-
-        const fotos = data.foto.split(",");
-        // render foto
-        fotos.forEach(id => {
-
-        let url = "https://drive.google.com/uc?export=view&id=" + id.trim();
-
-        const img = document.createElement("img");
-        img.src = url;
-        img.style.width = "100px";
-        img.style.margin = "5px";
-        img.style.borderRadius = "6px";
-        img.style.cursor = "pointer";
-
-        img.onclick = function(){
-          bukaFoto(url);
-        };
-
-        preview.appendChild(img);
-
-        });
-      }
-
-    }
-    </script> -->
-
       <!-- ini download report -->
     <script>
       function downloadExcel() {
@@ -1291,75 +1118,84 @@ if(data.foto){
 
     </script>
     <script>
-          const SCRIPT_URL =
-            "https://script.google.com/macros/s/AKfycbzfAd48N5P_uQAjacrlvSuEq9XhfCJ6EjcJrXJgDl82-SNPufovt_ig0u7M0vhXAtrt/exec";
+      const SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycbzfAd48N5P_uQAjacrlvSuEq9XhfCJ6EjcJrXJgDl82-SNPufovt_ig0u7M0vhXAtrt/exec";
 
-            
+      document.getElementById("operasiForm")
+      .addEventListener("submit", function (e) {
 
-          document.getElementById("operasiForm")
-          .addEventListener("submit", function (e) {
+      e.preventDefault();
 
-            e.preventDefault();
+      const spinner = document.getElementById("spinner");
+      const successMsg = document.getElementById("successMsg");
 
-            const spinner = document.getElementById("spinner");
-            const successMsg = document.getElementById("successMsg");
+      spinner.style.display = "block";
+      successMsg.style.display = "none";
 
-            spinner.style.display = "block";
-            successMsg.style.display = "none";
+      const formData = new FormData(this);
 
-            const formData = new FormData(this);
-            formData.append("token", "RAHASIA123");
+      formData.append("token", "RAHASIA123");
 
-            // kirim foto
-            formData.append("foto_list", JSON.stringify(fotoBase64List));
+      // kirim foto baru
+      formData.append("foto_list", JSON.stringify(fotoBase64List));
 
+      // kirim foto lama yang masih tersisa
+      formData.append(
+      "foto_lama",
+      document.getElementById("operasiForm").dataset.fotoLama || ""
+      );
 
-            const editId = this.dataset.editId;
+      const editId = this.dataset.editId;
 
-            if(editId){
-              formData.append("action", "update");
-              formData.append("id", editId);
-            }
+      if(editId){
+        formData.append("action", "update");
+        formData.append("id", editId);
+      }
 
-            fetch(SCRIPT_URL, {
-              method: "POST",
-              body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.result === "success") {
+      fetch(SCRIPT_URL,{
+        method:"POST",
+        body:formData
+      })
+      .then(res=>res.json())
+      .then(data=>{
 
-                this.reset();
-                delete this.dataset.editId;
+      if(data.result === "success"){
 
-                fotoBase64List = [];
-                document.getElementById("previewFoto").innerHTML = "";
+      this.reset();
+      delete this.dataset.editId;
 
-                successMsg.style.display = "block";
+      fotoBase64List = [];
+      document.getElementById("previewFoto").innerHTML = "";
 
-                // refresh hanya jika filter laporan sudah diisi
-                const nama_rs = document.getElementById("lap_nama_rs")?.value;
-                const tgl_awal = document.getElementById("lap_tgl_awal")?.value;
-                const tgl_akhir = document.getElementById("lap_tgl_akhir")?.value;
+      successMsg.style.display = "block";
 
-                if(nama_rs && tgl_awal && tgl_akhir){
-                  getLaporan();
-                }
+      // refresh laporan jika filter sudah ada
+      const nama_rs = document.getElementById("lap_nama_rs")?.value;
+      const tgl_awal = document.getElementById("lap_tgl_awal")?.value;
+      const tgl_akhir = document.getElementById("lap_tgl_akhir")?.value;
 
-              } else {
-                alert("Gagal menyimpan data.");
-                console.log(data);
-              }
-            })
-            .catch(err => {
-              alert("Terjadi kesalahan koneksi.");
-              console.error(err);
-            })
-            .finally(() => {
-              spinner.style.display = "none";
-            });
-        });
-    </script>
+      if(nama_rs && tgl_awal && tgl_akhir){
+      getLaporan();
+      }
+
+      }else{
+
+      alert("Gagal menyimpan data.");
+      console.log(data);
+
+      }
+
+      })
+      .catch(err=>{
+      alert("Terjadi kesalahan koneksi.");
+      console.error(err);
+      })
+      .finally(()=>{
+      spinner.style.display="none";
+      });
+
+      });
+</script>>
 
     <!-- view foto -->
      <script>
