@@ -298,6 +298,9 @@ body{
     <button onclick="showForm()" id="btnForm" class="active">
       Form Input
     </button>
+    <button onclick="showPenerimaan()" id="btnPenerimaan">
+      Penerimaan RS
+    </button>
     <button onclick="showLaporan()" id="btnLaporan">
       Laporan
     </button>
@@ -396,6 +399,96 @@ body{
     <div id="hasilLaporan" class="table-responsive" style="margin-top:20px;"></div>
   </div>
 </div>
+<div id="penerimaanSection" style="display:none;">
+  <div class="container">
+    <h3>Penerimaan RS Bulanan</h3>
+
+    <form id="penerimaanForm">
+
+      <label>Rumah Sakit</label>
+      <select name="nama_rs" required>
+        <option value="">Pilih Rumah Sakit</option>
+        <option value="RS Orthopedi Siaga Raya">RS Orthopedi Siaga Raya</option>
+        <option value="RS Bethsaida">RS Bethsaida</option>
+        <option value="RS Krakatau Medika">RS Krakatau Medika</option>
+        <option value="RS Primaya">RS Primaya</option>
+      </select>
+
+      <label>Bulan</label>
+      <select name="bulan" required>
+        <option value="">Pilih Bulan</option>
+        <option value="1">Januari</option>
+        <option value="2">Februari</option>
+        <option value="3">Maret</option>
+        <option value="4">April</option>
+        <option value="5">Mei</option>
+        <option value="6">Juni</option>
+        <option value="7">Juli</option>
+        <option value="8">Agustus</option>
+        <option value="9">September</option>
+        <option value="10">Oktober</option>
+        <option value="11">November</option>
+        <option value="12">Desember</option>
+      </select>
+
+      <label>Tahun</label>
+      <input type="number" name="tahun" id="tahun_input" required />
+
+      <label>Total Penerimaan (Rp)</label>
+      <input type="text" id="total_penerimaan" required />
+      <input type="hidden" name="total" id="total_hidden" />
+
+      <label>Pajak Dipotong RS (Rp)</label>
+      <input type="text" id="pajak_rs">
+      <input type="hidden" name="pajak_rs" id="pajak_rs_hidden">
+
+      <label>Keterangan</label>
+      <textarea name="keterangan"></textarea>
+
+      <button type="submit" class="form-btn">Simpan</button>
+
+      <div class="spinner" id="spinnerPenerimaan">Menyimpan...</div>
+      <div class="success" id="successPenerimaan">Berhasil disimpan!</div>
+
+    </form>
+    <div class="spinner" id="spinnerLoadPenerimaan" style="display:none;">
+      Mengambil data penerimaan...
+    </div>
+
+      <div style="margin-top:20px;">
+
+    <input type="text" id="searchPenerimaan" placeholder="Cari RS / bulan..."
+      style="padding:6px;width:40%;">
+    <select id="filterRS" style="padding:6px;">
+      <option value="">Semua RS</option>
+    </select>
+
+    <select id="filterTahun" style="padding:6px;">
+      <option value="">Semua Tahun</option>
+    </select>
+
+    <select id="sortPenerimaan" style="padding:6px;">
+      <option value="desc">Terbaru</option>
+      <option value="asc">Terlama</option>
+    </select>
+
+    <!-- ✅ STATUS PAJAK -->
+    <select id="statusPajak" style="padding:5px;">
+      <option value="TK0">TK/0</option>
+      <option value="TK1">TK/1</option>
+      <option value="TK2">TK/2</option>
+      <option value="TK3">TK/3</option>
+      <option value="K0">K/0</option>
+      <option value="K1" selected>K/1</option>
+      <option value="K2">K/2</option>
+      <option value="K3">K/3</option>
+    </select>
+
+  </div>
+
+    <div id="listPenerimaan" class="table-responsive" style="margin-top:20px;"></div>
+  </div>
+</div>
 </div>
 
 
@@ -480,20 +573,42 @@ body{
     </script>
     <!-- ini show form -->
     <script>
+    function resetMenu(){
+      document.getElementById("btnForm").classList.remove("active");
+      document.getElementById("btnLaporan").classList.remove("active");
+      document.getElementById("btnPenerimaan").classList.remove("active");
+    }
+
     function showForm() {
+      resetMenu();
+
       document.getElementById("formSection").style.display = "block";
       document.getElementById("laporanSection").style.display = "none";
+      document.getElementById("penerimaanSection").style.display = "none";
 
       document.getElementById("btnForm").classList.add("active");
-      document.getElementById("btnLaporan").classList.remove("active");
     }
 
     function showLaporan() {
+      resetMenu();
+
       document.getElementById("formSection").style.display = "none";
       document.getElementById("laporanSection").style.display = "block";
+      document.getElementById("penerimaanSection").style.display = "none";
 
-      document.getElementById("btnForm").classList.remove("active");
       document.getElementById("btnLaporan").classList.add("active");
+    }
+
+    function showPenerimaan() {
+      resetMenu();
+
+      document.getElementById("formSection").style.display = "none";
+      document.getElementById("laporanSection").style.display = "none";
+      document.getElementById("penerimaanSection").style.display = "block";
+
+      document.getElementById("btnPenerimaan").classList.add("active");
+
+      loadPenerimaan(); // ⬅ penting
     }
     </script>
     <!-- ini form input -->
@@ -750,118 +865,118 @@ body{
 
           <script>
 
-function editData(id){
+  function editData(id){
 
-console.log("Edit ID:", id);
+  console.log("Edit ID:", id);
 
-if(!window.laporanCache || !window.laporanCache.detail){
-  alert("Data tidak ditemukan");
-  return;
-}
+  if(!window.laporanCache || !window.laporanCache.detail){
+    alert("Data tidak ditemukan");
+    return;
+  }
 
-const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
+  const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
 
-if(!data){
-  alert("Data tidak ditemukan di cache");
-  return;
-}
+  if(!data){
+    alert("Data tidak ditemukan di cache");
+    return;
+  }
 
-// pindah ke form
-showForm();
+  // pindah ke form
+  showForm();
 
-// isi form
-document.querySelector('[name="nama_rs"]').value =
-  document.getElementById("lap_nama_rs").value;
+  // isi form
+  document.querySelector('[name="nama_rs"]').value =
+    document.getElementById("lap_nama_rs").value;
 
-document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
-document.querySelector('[name="nama_pasien"]').value = data.pasien;
-document.querySelector('[name="diagnosa"]').value = data.diagnosa;
-document.querySelector('[name="tindakan"]').value = data.tindakan;
-document.querySelector('[name="jaminan"]').value = data.jaminan;
+  document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
+  document.querySelector('[name="nama_pasien"]').value = data.pasien;
+  document.querySelector('[name="diagnosa"]').value = data.diagnosa;
+  document.querySelector('[name="tindakan"]').value = data.tindakan;
+  document.querySelector('[name="jaminan"]').value = data.jaminan;
 
-document.getElementById("jasa_operasi").value =
-  Number(data.jasa).toLocaleString("id-ID");
+  document.getElementById("jasa_operasi").value =
+    Number(data.jasa).toLocaleString("id-ID");
 
-document.getElementById("jasa_operasi_hidden").value = data.jasa;
+  document.getElementById("jasa_operasi_hidden").value = data.jasa;
 
-const form = document.getElementById("operasiForm");
-form.dataset.editId = id;
+  const form = document.getElementById("operasiForm");
+  form.dataset.editId = id;
 
 
-// ======================
-// TAMPILKAN FOTO LAMA
-// ======================
+  // ======================
+  // TAMPILKAN FOTO LAMA
+  // ======================
 
-const preview = document.getElementById("previewFoto");
-preview.innerHTML = "";
+  const preview = document.getElementById("previewFoto");
+  preview.innerHTML = "";
 
-let fotoArray = [];
+  let fotoArray = [];
 
-if(data.foto){
+  if(data.foto){
 
-fotoArray = data.foto.split(",").map(f => f.trim());
+  fotoArray = data.foto.split(",").map(f => f.trim());
 
-fotoArray.forEach((fid,index)=>{
+  fotoArray.forEach((fid,index)=>{
 
-let thumb = "https://drive.google.com/thumbnail?id=" + fid + "&sz=w200";
-let full  = "https://lh3.googleusercontent.com/d/" + fid;
+  let thumb = "https://drive.google.com/thumbnail?id=" + fid + "&sz=w200";
+  let full  = "https://lh3.googleusercontent.com/d/" + fid;
 
-const box = document.createElement("div");
-box.style.position = "relative";
-box.style.display = "inline-block";
-box.style.margin = "5px";
+  const box = document.createElement("div");
+  box.style.position = "relative";
+  box.style.display = "inline-block";
+  box.style.margin = "5px";
 
-const img = document.createElement("img");
-img.src = thumb;
-img.style.width = "80px";
-img.style.height = "80px";
-img.style.objectFit = "cover";
-img.style.borderRadius = "6px";
-img.style.cursor = "pointer";
-img.style.border = "1px solid #ccc";
+  const img = document.createElement("img");
+  img.src = thumb;
+  img.style.width = "80px";
+  img.style.height = "80px";
+  img.style.objectFit = "cover";
+  img.style.borderRadius = "6px";
+  img.style.cursor = "pointer";
+  img.style.border = "1px solid #ccc";
 
-img.onclick = function(){
-  bukaFoto(full);
-};
+  img.onclick = function(){
+    bukaFoto(full);
+  };
 
-const btn = document.createElement("div");
-btn.innerHTML = "✖";
-btn.style.position = "absolute";
-btn.style.top = "-6px";
-btn.style.right = "-6px";
-btn.style.background = "red";
-btn.style.color = "white";
-btn.style.width = "20px";
-btn.style.height = "20px";
-btn.style.borderRadius = "50%";
-btn.style.fontSize = "12px";
-btn.style.display = "flex";
-btn.style.alignItems = "center";
-btn.style.justifyContent = "center";
-btn.style.cursor = "pointer";
+  const btn = document.createElement("div");
+  btn.innerHTML = "✖";
+  btn.style.position = "absolute";
+  btn.style.top = "-6px";
+  btn.style.right = "-6px";
+  btn.style.background = "red";
+  btn.style.color = "white";
+  btn.style.width = "20px";
+  btn.style.height = "20px";
+  btn.style.borderRadius = "50%";
+  btn.style.fontSize = "12px";
+  btn.style.display = "flex";
+  btn.style.alignItems = "center";
+  btn.style.justifyContent = "center";
+  btn.style.cursor = "pointer";
 
-btn.onclick = function(){
+  btn.onclick = function(){
 
-fotoArray.splice(index,1);
+  fotoArray.splice(index,1);
 
-form.dataset.fotoLama = fotoArray.join(",");
+  form.dataset.fotoLama = fotoArray.join(",");
 
-box.remove();
+  box.remove();
 
-};
+  };
 
-box.appendChild(img);
-box.appendChild(btn);
+  box.appendChild(img);
+  box.appendChild(btn);
 
-preview.appendChild(box);
+  preview.appendChild(box);
 
-});
+  });
 
-}
+  }
 
-form.dataset.fotoLama = fotoArray.join(",");
+  form.dataset.fotoLama = fotoArray.join(",");
 
-}
+  }
 
 </script>
 
@@ -984,6 +1099,624 @@ form.dataset.fotoLama = fotoArray.join(",");
 
       XLSX.writeFile(wb, fileName);
     }
+    </script>
+    <script>
+      // angka Rp penerimaan
+      const totalInput = document.getElementById("total_penerimaan");
+      const totalHidden = document.getElementById("total_hidden");
+
+      totalInput.addEventListener("input", function () {
+        let value = this.value.replace(/\D/g, "");
+        totalHidden.value = value;
+
+        if (value === "") {
+          this.value = "";
+          return;
+        }
+
+        this.value = new Intl.NumberFormat("id-ID").format(value);
+      });
+    </script>
+
+    <script>
+      function isiFilterRS(data){
+
+        const select = document.getElementById("filterRS");
+
+        let rsUnik = [...new Set(data.map(d => d.nama_rs))];
+
+        select.innerHTML = `<option value="">Semua RS</option>`;
+
+        rsUnik.forEach(rs => {
+          select.innerHTML += `<option value="${rs}">${rs}</option>`;
+        });
+      }
+      </script>
+      <script>
+        function getPTKP(status){
+        const ptkp = {
+          TK0: 54000000,
+          TK1: 58500000,
+          TK2: 63000000,
+          TK3: 67500000,
+          K0: 58500000,
+          K1: 63000000,
+          K2: 67500000,
+          K3: 72000000
+        };
+        return ptkp[status] || 54000000;
+      }
+      </script>
+
+      <script>
+        // format pajak
+        const pajakInput = document.getElementById("pajak_rs");
+        const pajakHidden = document.getElementById("pajak_rs_hidden");
+
+        pajakInput.addEventListener("input", function () {
+          let value = this.value.replace(/\D/g, "");
+          pajakHidden.value = value;
+
+          if (value === "") {
+            this.value = "";
+            return;
+          }
+
+          this.value = new Intl.NumberFormat("id-ID").format(value);
+        });
+      </script>
+
+      <script>
+        // render status
+        document.getElementById("statusPajak")
+        .addEventListener("change", function(){
+          renderTable();
+        });
+      </script>
+
+      <script>
+        // hitung pajak
+        function hitungPajakTahunan(data, statusPajak){
+
+          let totalBruto = data.reduce((sum, d) => {
+            return sum + (Number(d.total) + Number(d.pajak_rs || 0));
+          }, 0);
+
+          // biaya jabatan 5% max 6jt
+          let biayaJabatan = totalBruto * 0.05;
+          if(biayaJabatan > 6000000) biayaJabatan = 6000000;
+
+          let netto = totalBruto - biayaJabatan;
+
+          // ✅ AMBIL PTKP SESUAI STATUS
+          let PTKP = getPTKP(statusPajak);
+
+          let pkp = netto - PTKP;
+          if(pkp < 0) pkp = 0;
+
+          // ======================
+          // HITUNG PROGRESIF
+          // ======================
+          let sisa = pkp;
+          let pajak = 0;
+
+          if(sisa > 0){
+            let lapis = Math.min(sisa, 60000000);
+            pajak += lapis * 0.05;
+            sisa -= lapis;
+          }
+
+          if(sisa > 0){
+            let lapis = Math.min(sisa, 190000000);
+            pajak += lapis * 0.15;
+            sisa -= lapis;
+          }
+
+          if(sisa > 0){
+            let lapis = Math.min(sisa, 250000000);
+            pajak += lapis * 0.25;
+            sisa -= lapis;
+          }
+
+          if(sisa > 0){
+            let lapis = Math.min(sisa, 4500000000);
+            pajak += lapis * 0.30;
+            sisa -= lapis;
+          }
+
+          if(sisa > 0){
+            pajak += sisa * 0.35;
+          }
+
+          return {
+            bruto: totalBruto,
+            biaya_jabatan: biayaJabatan,
+            netto: netto,
+            pkp: pkp,
+            ptkp: PTKP, // 🔥 tambahin ini biar bisa ditampilkan
+            pph21: pajak
+          };
+        }
+      </script>
+     
+     <script>
+        document.getElementById("penerimaanForm")
+        .addEventListener("submit", function(e){
+
+          e.preventDefault();
+
+          if(sessionStorage.getItem("login") !== "true"){
+            alert("Silakan login terlebih dahulu.");
+            return;
+          }
+
+          const spinner = document.getElementById("spinnerPenerimaan");
+          const success = document.getElementById("successPenerimaan");
+
+          spinner.style.display = "block";
+          success.style.display = "none";
+
+          const formData = new FormData(this);
+          formData.append("token", "RAHASIA123");
+
+          // 🔥 INI BAGIAN PENTING (EDIT / INSERT)
+          const editId = this.dataset.editId;
+
+          if(editId){
+            formData.append("action", "update_penerimaan");
+            formData.append("id", editId);
+          }else{
+            formData.append("action", "insert_penerimaan");
+          }
+
+          fetch(SCRIPT_URL,{
+            method:"POST",
+            body:formData
+          })
+          .then(res=>res.json())
+          .then(res=>{
+
+            if(res.result === "success"){
+
+              this.reset();
+              delete this.dataset.editId; // ⬅ reset mode edit
+
+              document.getElementById("total_penerimaan").value = "";
+              document.getElementById("tahun_input").value = new Date().getFullYear();
+
+              success.style.display = "block";
+
+              // 🔄 reload data biar update kelihatan
+              loadPenerimaan();
+
+            }
+
+          })
+          .catch(err=>{
+            alert("Error koneksi");
+            console.error(err);
+          })
+          .finally(()=>{
+            spinner.style.display = "none";
+          });
+
+        });
+        </script>
+        <script>
+let currentPage = 1;
+const perPage = 12;
+
+function loadPenerimaan(){
+
+  const spinner = document.getElementById("spinnerLoadPenerimaan");
+  const list = document.getElementById("listPenerimaan");
+
+  spinner.style.display = "block";
+  list.innerHTML = "";
+
+  fetch(SCRIPT_URL + "?action=get_penerimaan")
+  .then(res => res.json())
+  .then(res => {
+
+    if(res.result !== "success"){
+      list.innerHTML = "Gagal load data";
+      return;
+    }
+
+    window.penerimaanCache = res.data || [];
+
+    isiFilterTahun(res.data);
+    isiFilterRS(res.data); // 🔥 TAMBAHAN FILTER RS
+
+    currentPage = 1;
+    renderTable();
+
+  })
+  .catch(err=>{
+    list.innerHTML = "Error koneksi";
+    console.error(err);
+  })
+  .finally(()=>{
+    spinner.style.display = "none";
+  });
+}
+
+// ======================
+// FILTER TAHUN
+// ======================
+function isiFilterTahun(data){
+
+  const select = document.getElementById("filterTahun");
+
+  let tahunUnik = [...new Set(data.map(d => d.tahun))].sort((a,b)=>b-a);
+
+  select.innerHTML = `<option value="">Semua Tahun</option>`;
+
+  tahunUnik.forEach(t => {
+    select.innerHTML += `<option value="${t}">${t}</option>`;
+  });
+}
+
+// ======================
+// FILTER RS
+// ======================
+function isiFilterRS(data){
+
+  const select = document.getElementById("filterRS");
+
+  let rsUnik = [...new Set(data.map(d => d.nama_rs))].sort();
+
+  select.innerHTML = `<option value="">Semua RS</option>`;
+
+  rsUnik.forEach(rs => {
+    select.innerHTML += `<option value="${rs}">${rs}</option>`;
+  });
+}
+
+// ======================
+// RENDER TABLE
+// ======================
+function renderTable() {
+
+  const list = document.getElementById("listPenerimaan");
+  let data = [...(window.penerimaanCache || [])];
+
+  const keyword = document.getElementById("searchPenerimaan").value.toLowerCase();
+  const tahun = document.getElementById("filterTahun").value;
+  const sort = document.getElementById("sortPenerimaan").value;
+  const rs = document.getElementById("filterRS").value;
+  const statusPajak = document.getElementById("statusPajak").value;
+
+  const namaBulan = [
+    "",
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
+
+  // FILTER
+  if(keyword){
+    data = data.filter(d =>
+      d.nama_rs.toLowerCase().includes(keyword) ||
+      (namaBulan[Number(d.bulan)] || "").toLowerCase().includes(keyword)
+    );
+  }
+
+  if(tahun){
+    data = data.filter(d => String(d.tahun) === String(tahun));
+  }
+
+  if(rs){
+    data = data.filter(d => d.nama_rs === rs);
+  }
+
+  // SORT
+  data.sort((a,b)=>{
+    return sort === "desc"
+      ? (b.tahun - a.tahun || b.bulan - a.bulan)
+      : (a.tahun - b.tahun || a.bulan - b.bulan);
+  });
+
+  // PAGINATION
+  const totalPage = Math.ceil(data.length / perPage) || 1;
+  if(currentPage > totalPage) currentPage = totalPage;
+  const start = (currentPage - 1) * perPage;
+  const pageData = data.slice(start, start + perPage);
+
+  // TOTAL
+  let totalSemua = data.reduce((sum, d) => sum + (Number(d.total) || 0), 0);
+  let totalBruto = data.reduce((sum, d) => sum + (Number(d.total) + Number(d.pajak_rs || 0)), 0);
+  let totalPajakDipotong = data.reduce((sum, d) => sum + (Number(d.pajak_rs) || 0), 0);
+
+  // PAJAK
+  let pajakTahunan = hitungPajakTahunan(data, statusPajak);
+  let kurangLebihBayar = pajakTahunan.pph21 - totalPajakDipotong;
+  let warnaStatus = kurangLebihBayar > 0 ? "#ffdddd" : "#ddffdd";
+
+  // ======================
+  // HTML TABLE
+  // ======================
+  let html = `
+    <div style="margin-bottom:10px; font-weight:bold;">
+      Total Netto: Rp ${totalSemua.toLocaleString("id-ID")} <br>
+      Total Bruto: Rp ${totalBruto.toLocaleString("id-ID")}
+    </div>
+
+    <button onclick="exportExcelPenerimaan()" 
+      style="margin-bottom:10px;padding:6px 12px;cursor:pointer;">
+      📥 Export Excel
+    </button>
+
+    <div style="overflow-x:auto;">
+      <table border="1" width="100%" cellpadding="5">
+        <tr>
+          <th>Aksi</th>
+          <th>RS</th>
+          <th>Bulan</th>
+          <th>Tahun</th>
+          <th>Netto</th>
+          <th>Pajak</th>
+          <th>Bruto</th>
+          <th>Keterangan</th>
+        </tr>
+  `;
+
+  if(pageData.length === 0){
+    html += `<tr><td colspan="8" align="center">Tidak ada data</td></tr>`;
+  } else {
+    pageData.forEach(row => {
+      let bruto = Number(row.total) + Number(row.pajak_rs || 0);
+      const bulanText = namaBulan[Number(row.bulan)] || row.bulan;
+
+      html += `
+      <tr>
+        <td>
+          <button onclick="editPenerimaan('${row.id}')">Edit</button>
+          <button onclick="hapusPenerimaan('${row.id}')">Hapus</button>
+        </td>
+        <td>${row.nama_rs}</td>
+        <td>${bulanText}</td>
+        <td>${row.tahun}</td>
+        <td>Rp ${Number(row.total).toLocaleString()}</td>
+        <td>Rp ${Number(row.pajak_rs || 0).toLocaleString()}</td>
+        <td>Rp ${bruto.toLocaleString()}</td>
+        <td>${row.keterangan || '-'}</td>
+      </tr>`;
+    });
+  }
+
+  html += `
+      </table>
+    </div> <!-- END overflow-x-auto -->
+
+    <div style="margin-top:10px;text-align:center;">
+      <button onclick="prevPage()" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>
+      Halaman ${currentPage} / ${totalPage}
+      <button onclick="nextPage()" ${currentPage >= totalPage ? 'disabled' : ''}>Next</button>
+    </div>
+  `;
+
+  // ======================
+  // SIMULASI PAJAK & STATUS PAJAK DI BAWAH TABEL (FULL WIDTH)
+  // ======================
+  html += `
+    <div style="margin-top:20px;">
+      <div style="margin-bottom:15px; padding:12px; background:#eef; border-left:5px solid #00f;">
+        <b>SIMULASI PAJAK (${statusPajak})</b><br><br>
+
+        Bruto: Rp ${pajakTahunan.bruto.toLocaleString("id-ID")}<br>
+        Biaya Jabatan: Rp ${pajakTahunan.biaya_jabatan.toLocaleString("id-ID")}<br>
+        Netto: Rp ${pajakTahunan.netto.toLocaleString("id-ID")}<br>
+
+        <span style="background:yellow; padding:2px 5px;">
+          PKP: Rp ${pajakTahunan.pkp.toLocaleString("id-ID")}
+        </span><br>
+
+        <b style="color:red;">
+          PPh 21: Rp ${pajakTahunan.pph21.toLocaleString("id-ID")}
+        </b>
+
+        <div style="font-size:12px; margin-top:8px; color:#333;">
+          • PKP = Netto - PTKP<br>
+          • PTKP (${statusPajak}) = Rp ${pajakTahunan.ptkp.toLocaleString("id-ID")}<br>
+          • Tarif progresif (5% - 35%)
+        </div>
+      </div>
+
+      <div style="margin-bottom:15px; padding:12px; background:${warnaStatus}; border-left:5px solid ${kurangLebihBayar > 0 ? "red" : "green"};">
+        Pajak Dipotong RS: Rp ${totalPajakDipotong.toLocaleString("id-ID")}<br>
+
+        <b style="color:${kurangLebihBayar > 0 ? "red" : "green"};">
+          ${kurangLebihBayar > 0 ? "Kurang Bayar" : "Lebih Bayar"}:
+          Rp ${Math.abs(kurangLebihBayar).toLocaleString("id-ID")}
+        </b>
+      </div>
+    </div>
+  `;
+
+  list.innerHTML = html;
+}
+
+// PAGINATION CONTROL
+function nextPage(){
+  currentPage++;
+  renderTable();
+}
+
+function prevPage(){
+  currentPage--;
+  renderTable();
+}
+;
+</script>
+    <script>
+      function editPenerimaan(id){
+
+        const data = window.penerimaanCache.find(d => String(d.id) === String(id));
+        if(!data) return;
+
+        const form = document.getElementById("penerimaanForm");
+
+        form.nama_rs.value = data.nama_rs;
+        form.bulan.value = data.bulan;
+        form.tahun.value = data.tahun;
+        form.keterangan.value = data.keterangan || "";
+
+        document.getElementById("total_penerimaan").value =
+          Number(data.total).toLocaleString("id-ID");
+
+        document.getElementById("total_hidden").value = data.total;
+
+        document.getElementById("pajak_rs").value =
+          Number(data.pajak_rs || 0).toLocaleString("id-ID");
+
+        document.getElementById("pajak_rs_hidden").value = data.pajak_rs || 0;
+
+        form.dataset.editId = id;
+
+      }
+    </script>
+    <script>
+      function hapusPenerimaan(id){
+
+      if(!confirm("Yakin hapus data ini?")) return;
+
+      const formData = new FormData();
+      formData.append("token", "RAHASIA123");
+      formData.append("action", "delete_penerimaan");
+      formData.append("id", id);
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.result === "success"){
+          alert("Berhasil dihapus");
+          loadPenerimaan();
+        }
+      });
+
+    }
+    </script>
+    <script>
+      function exportExcelPenerimaan(){
+
+  if(!window.penerimaanCache || window.penerimaanCache.length === 0){
+    alert("Data kosong");
+    return;
+  }
+
+  let data = [...window.penerimaanCache];
+
+  const keyword = document.getElementById("searchPenerimaan").value.toLowerCase();
+  const tahun = document.getElementById("filterTahun").value;
+  const rs = document.getElementById("filterRS").value;
+
+  const namaBulan = [
+    "",
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
+
+  // 🔍 FILTER (biar sama kayak tampilan)
+  if(keyword){
+    data = data.filter(d =>
+      d.nama_rs.toLowerCase().includes(keyword) ||
+      (namaBulan[Number(d.bulan)] || "").toLowerCase().includes(keyword)
+    );
+  }
+
+  if(tahun){
+    data = data.filter(d => String(d.tahun) === String(tahun));
+  }
+
+  if(rs){
+    data = data.filter(d => d.nama_rs === rs);
+  }
+
+  // SORT
+  data.sort((a,b)=> b.tahun - a.tahun || b.bulan - a.bulan);
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([]);
+
+  let sheetData = [];
+
+  sheetData.push(["LAPORAN PENERIMAAN RS"]);
+  sheetData.push([]);
+
+  sheetData.push([
+  "RS",
+  "Bulan",
+  "Tahun",
+  "Total (Netto)",
+  "Pajak RS",
+  "Bruto",
+  "Keterangan"
+]);
+
+  let startRow = sheetData.length + 1;
+
+  data.forEach(row => {
+
+  let total = Number(row.total) || 0;
+  let pajak = Number(row.pajak_rs || 0);
+  let bruto = total + pajak;
+
+  sheetData.push([
+    row.nama_rs,
+    namaBulan[Number(row.bulan)],
+    row.tahun,
+    total,
+    pajak,
+    bruto,
+    row.keterangan || "-"
+  ]);
+});
+
+  let lastRow = sheetData.length;
+
+  // TOTAL
+  sheetData.push([
+    "",
+    "",
+    "TOTAL",
+    {f:`SUM(D${startRow}:D${lastRow})`}, // netto
+    {f:`SUM(E${startRow}:E${lastRow})`}, // pajak
+    {f:`SUM(F${startRow}:F${lastRow})`}, // bruto
+    ""
+  ]);
+
+  XLSX.utils.sheet_add_aoa(ws, sheetData, {origin:"A1"});
+
+  // format uang
+  for(let i = startRow-1; i <= lastRow; i++){
+
+  [3,4,5].forEach(col => { // D,E,F
+    let cell = XLSX.utils.encode_cell({r:i, c:col});
+    if(ws[cell]){
+      ws[cell].t = 'n';
+      ws[cell].z = '"Rp"#,##0';
+    }
+  });
+
+}
+
+  ws["!cols"] = [
+  {wch:25},
+  {wch:15},
+  {wch:10},
+  {wch:18},
+  {wch:18},
+  {wch:18},
+  {wch:30}
+];
+
+  XLSX.utils.book_append_sheet(wb, ws, "Penerimaan");
+
+  XLSX.writeFile(wb, "Laporan_Penerimaan_RS.xlsx");
+}
     </script>
           <!-- script logout -->
     <script>
@@ -1117,6 +1850,10 @@ form.dataset.fotoLama = fotoArray.join(",");
 }
 
     </script>
+  <script>
+  // set tahun otomatis saat halaman dibuka
+  document.getElementById("tahun_input").value = new Date().getFullYear();
+  </script>
     <script>
       const SCRIPT_URL =
       "https://script.google.com/macros/s/AKfycbzfAd48N5P_uQAjacrlvSuEq9XhfCJ6EjcJrXJgDl82-SNPufovt_ig0u7M0vhXAtrt/exec";
