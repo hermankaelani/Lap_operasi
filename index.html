@@ -6,16 +6,19 @@
     <title>Input Data Operasi</title>
 
     <style>
+/* ================= GLOBAL ================= */
 body{
   font-family: Arial, sans-serif;
-  background: #f4f6f9;
+  background: #eef1f5;
   margin: 0;
-  padding: 20px;
-  }
-  
+  padding: 0;
+}
+
 #mainSection{
   display:none;
 }
+
+/* ================= LOGIN ================= */
 #loginWrapper{
   position: fixed;
   top: 0;
@@ -49,14 +52,6 @@ body{
   margin-bottom: 15px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-#loginSection input:focus{
-  border-color: #3b82f6;
-  outline: none;
-  box-shadow: 0 0 5px rgba(59,130,246,0.4);
 }
 
 #loginSection button{
@@ -66,18 +61,7 @@ body{
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 15px;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-#loginSection button:hover{
-  background: #16306b;
-}
-
-#loginSection button:disabled{
-  background: #9ca3af;
-  cursor: not-allowed;
 }
 
 .spinnerlogin{
@@ -85,32 +69,15 @@ body{
   display: none;
 }
 
-.spinnerlogin div{
-  width: 25px;
-  height: 25px;
-  border: 4px solid #ccc;
-  border-top: 4px solid #1f3c88;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: auto;
-}
-
-@keyframes spin{
-  0%{ transform: rotate(0deg); }
-  100%{ transform: rotate(360deg); }
-}
-
-@keyframes fadeIn{
-  from{ opacity: 0; transform: translateY(-10px); }
-  to{ opacity: 1; transform: translateY(0); }
-}
-      .navbar {
+/* ================= NAVBAR ================= */
+.navbar {
   background: #1f3c88;
   color: white;
-  padding: 15px 25px;
+  padding: 12px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .nav-brand {
@@ -118,15 +85,19 @@ body{
   font-size: 18px;
 }
 
+.nav-menu {
+  display: flex;
+  gap: 10px;
+}
+
 .nav-menu button {
   background: transparent;
   border: none;
   color: white;
-  margin-left: 15px;
-  font-size: 15px;
-  cursor: pointer;
+  font-size: 14px;
   padding: 6px 12px;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .nav-menu button:hover {
@@ -137,53 +108,66 @@ body{
   background: rgba(255,255,255,0.3);
 }
 
-      textarea {
-        width: 100%;
-        min-height: 100px;
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-        resize: vertical; /* hanya bisa tarik atas-bawah */
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-      }
+/* logout merah */
+.nav-menu button:last-child {
+  background: #dc3545;
+}
 
-      .container {
-        max-width: 600px;
-        margin: auto;
-        background: #ffffff;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
+/* hamburger */
+.menu-toggle {
+  display: none;
+  font-size: 22px;
+  cursor: pointer;
+}
 
-      h2 {
-        text-align: center;
-        margin-bottom: 20px;
-      }
+/* ================= CONTAINER ================= */
+.container {
+  width: 100%;
+  max-width: 700px;
+  margin: 30px auto;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
 
-      label {
-        font-weight: bold;
-        margin-top: 12px;
-        display: block;
-      }
+/* ================= FORM ================= */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1f3c88;
+}
 
-      input,
-      select {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-      }
+label {
+  font-weight: 600;
+  margin-top: 12px;
+  display: block;
+}
 
-      .form-btn {
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.form-btn {
   margin-top: 20px;
   width: 100%;
   padding: 12px;
-  background-color: #28a745;
+  background: #28a745;
   border: none;
   color: white;
   font-size: 16px;
@@ -191,102 +175,80 @@ body{
   cursor: pointer;
 }
 
+.form-btn:hover {
+  background: #218838;
+}
+
+/* ================= TABLE ================= */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
 }
+
 .table-responsive table {
   width: 100%;
   border-collapse: collapse;
 }
-.table-responsive th, .table-responsive td {
-  padding: 5px;
+
+.table-responsive th,
+.table-responsive td {
+  padding: 6px;
   text-align: left;
-  white-space: nowrap; /* supaya teks tidak patah baris */
-}
-
-.form-btn:hover {
-  background-color: #218838;
-}
-
-      .spinner {
-        display: none;
-        text-align: center;
-        margin-top: 15px;
-      }
-
-      .success {
-        display: none;
-        margin-top: 15px;
-        padding: 10px;
-        background: #d4edda;
-        color: #155724;
-        border-radius: 5px;
-        text-align: center;
-      }
-
-      @media (max-width: 600px) {
-  .table-responsive th, .table-responsive td {
-    font-size: 12px;
-    padding: 4px;
-  }
-  /* ===== NAVBAR RESPONSIVE FIX ===== */
-
-.navbar{
-  flex-wrap: nowrap;
-}
-
-.nav-menu{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  overflow-x: auto;
   white-space: nowrap;
 }
 
-.nav-menu button{
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* Hilangkan scrollbar jelek di HP */
-.nav-menu::-webkit-scrollbar{
+/* ================= STATUS ================= */
+.spinner {
   display: none;
+  text-align: center;
+  margin-top: 15px;
 }
 
-/* Kecilkan font saat layar kecil */
-@media (max-width: 500px){
-  .nav-brand{
-    font-size: 14px;
-  }
-
-  .nav-menu button{
-    font-size: 13px;
-    padding: 5px 8px;
-  }
+.success {
+  display: none;
+  margin-top: 15px;
+  padding: 10px;
+  background: #d4edda;
+  color: #155724;
+  border-radius: 5px;
+  text-align: center;
 }
 
-/* Kalau layar sangat kecil, brand disembunyikan */
-@media (max-width: 400px){
-  .nav-brand{
+/* ================= MOBILE ================= */
+@media (max-width: 768px){
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 55px;
+    right: 10px;
+    background: #1f3c88;
+    flex-direction: column;
+    width: 200px;
+    border-radius: 10px;
+    padding: 10px;
     display: none;
   }
-}
-}
 
-      @media (max-width: 600px) {
-  .nav-menu {
-    flex-direction: column;
-    gap: 8px; /* bisa diganti sesuai selera */
-    overflow-x: visible; 
-    align-items: stretch; /* tombol full lebar */
+  .nav-menu.show {
+    display: flex;
   }
+
   .nav-menu button {
     width: 100%;
-    text-align: center;
+    text-align: left;
+    padding: 10px;
+  }
+
+  .table-responsive th,
+  .table-responsive td {
+    font-size: 12px;
   }
 }
-    </style>
+</style>
   </head>
 
   <div id="loginWrapper">
@@ -307,7 +269,11 @@ body{
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-brand">Sistem Operasi</div>
-  <div class="nav-menu">
+
+  <!-- tombol hamburger -->
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+  <div class="nav-menu" id="navMenu">
     <button onclick="showForm()" id="btnForm" class="active">
       Form Input
     </button>
@@ -1961,7 +1927,7 @@ function prevPage() {
       });
 
       });
-</script>>
+</script>
 
     <!-- view foto -->
      <script>
@@ -1981,6 +1947,19 @@ function prevPage() {
       }
 
       </script>
+
+      <script>
+function toggleMenu(){
+  document.getElementById("navMenu").classList.toggle("show");
+}
+
+// auto close saat klik menu
+document.querySelectorAll('.nav-menu button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById("navMenu").classList.remove("show");
+  });
+});
+</script>
 
    
   </body>
