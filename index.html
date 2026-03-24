@@ -1302,12 +1302,14 @@ body{
 
         });
         </script>
-        <script>
+ <script>
 let currentPage = 1;
 const perPage = 12;
 
-function loadPenerimaan(){
-
+// ======================
+// LOAD DATA PENERIMAAN
+// ======================
+function loadPenerimaan() {
   const spinner = document.getElementById("spinnerLoadPenerimaan");
   const list = document.getElementById("listPenerimaan");
 
@@ -1315,43 +1317,38 @@ function loadPenerimaan(){
   list.innerHTML = "";
 
   fetch(SCRIPT_URL + "?action=get_penerimaan")
-  .then(res => res.json())
-  .then(res => {
+    .then(res => res.json())
+    .then(res => {
+      if (res.result !== "success") {
+        list.innerHTML = "Gagal load data";
+        return;
+      }
 
-    if(res.result !== "success"){
-      list.innerHTML = "Gagal load data";
-      return;
-    }
+      window.penerimaanCache = res.data || [];
 
-    window.penerimaanCache = res.data || [];
+      isiFilterTahun(res.data);
+      isiFilterRS(res.data);
 
-    isiFilterTahun(res.data);
-    isiFilterRS(res.data); // 🔥 TAMBAHAN FILTER RS
-
-    currentPage = 1;
-    renderTable();
-
-  })
-  .catch(err=>{
-    list.innerHTML = "Error koneksi";
-    console.error(err);
-  })
-  .finally(()=>{
-    spinner.style.display = "none";
-  });
+      currentPage = 1;
+      renderTable();
+    })
+    .catch(err => {
+      list.innerHTML = "Error koneksi";
+      console.error(err);
+    })
+    .finally(() => {
+      spinner.style.display = "none";
+    });
 }
 
 // ======================
 // FILTER TAHUN
 // ======================
-function isiFilterTahun(data){
-
+function isiFilterTahun(data) {
   const select = document.getElementById("filterTahun");
-
-  let tahunUnik = [...new Set(data.map(d => d.tahun))].sort((a,b)=>b-a);
+  let tahunUnik = [...new Set(data.map(d => d.tahun))].sort((a, b) => b - a);
 
   select.innerHTML = `<option value="">Semua Tahun</option>`;
-
   tahunUnik.forEach(t => {
     select.innerHTML += `<option value="${t}">${t}</option>`;
   });
@@ -1360,14 +1357,11 @@ function isiFilterTahun(data){
 // ======================
 // FILTER RS
 // ======================
-function isiFilterRS(data){
-
+function isiFilterRS(data) {
   const select = document.getElementById("filterRS");
-
   let rsUnik = [...new Set(data.map(d => d.nama_rs))].sort();
 
   select.innerHTML = `<option value="">Semua RS</option>`;
-
   rsUnik.forEach(rs => {
     select.innerHTML += `<option value="${rs}">${rs}</option>`;
   });
@@ -1377,7 +1371,6 @@ function isiFilterRS(data){
 // RENDER TABLE
 // ======================
 function renderTable() {
-
   const list = document.getElementById("listPenerimaan");
   let data = [...(window.penerimaanCache || [])];
 
@@ -1393,24 +1386,26 @@ function renderTable() {
     "Juli","Agustus","September","Oktober","November","Desember"
   ];
 
-  // FILTER
-  if(keyword){
+  // FILTER KEYWORD
+  if (keyword) {
     data = data.filter(d =>
       d.nama_rs.toLowerCase().includes(keyword) ||
       (namaBulan[Number(d.bulan)] || "").toLowerCase().includes(keyword)
     );
   }
 
-  if(tahun){
+  // FILTER TAHUN
+  if (tahun) {
     data = data.filter(d => String(d.tahun) === String(tahun));
   }
 
-  if(rs){
+  // FILTER RS
+  if (rs) {
     data = data.filter(d => d.nama_rs === rs);
   }
 
   // SORT
-  data.sort((a,b)=>{
+  data.sort((a, b) => {
     return sort === "desc"
       ? (b.tahun - a.tahun || b.bulan - a.bulan)
       : (a.tahun - b.tahun || a.bulan - b.bulan);
@@ -1418,7 +1413,7 @@ function renderTable() {
 
   // PAGINATION
   const totalPage = Math.ceil(data.length / perPage) || 1;
-  if(currentPage > totalPage) currentPage = totalPage;
+  if (currentPage > totalPage) currentPage = totalPage;
   const start = (currentPage - 1) * perPage;
   const pageData = data.slice(start, start + perPage);
 
@@ -1460,7 +1455,7 @@ function renderTable() {
         </tr>
   `;
 
-  if(pageData.length === 0){
+  if (pageData.length === 0) {
     html += `<tr><td colspan="8" align="center">Tidak ada data</td></tr>`;
   } else {
     pageData.forEach(row => {
@@ -1486,7 +1481,7 @@ function renderTable() {
 
   html += `
       </table>
-    </div> <!-- END overflow-x-auto -->
+    </div>
 
     <div style="margin-top:10px;text-align:center;">
       <button onclick="prevPage()" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>
@@ -1496,7 +1491,7 @@ function renderTable() {
   `;
 
   // ======================
-  // SIMULASI PAJAK & STATUS PAJAK DI BAWAH TABEL (FULL WIDTH)
+  // SIMULASI PAJAK
   // ======================
   html += `
     <div style="margin-top:20px;">
@@ -1536,17 +1531,38 @@ function renderTable() {
   list.innerHTML = html;
 }
 
-// PAGINATION CONTROL
-function nextPage(){
+// ======================
+// LISTENER FILTER & SEARCH
+// ======================
+const filterElements = [
+  "filterRS",
+  "filterTahun",
+  "statusPajak",
+  "searchPenerimaan"
+];
+
+filterElements.forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const eventType = id === "searchPenerimaan" ? "input" : "change";
+  el.addEventListener(eventType, () => {
+    currentPage = 1; // reset halaman saat filter/search berubah
+    renderTable();
+  });
+});
+
+// ======================
+// PAGINATION
+// ======================
+function nextPage() {
   currentPage++;
   renderTable();
 }
 
-function prevPage(){
+function prevPage() {
   currentPage--;
   renderTable();
 }
-;
 </script>
     <script>
       function editPenerimaan(id){
