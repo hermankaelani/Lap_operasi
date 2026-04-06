@@ -314,6 +314,7 @@ textarea {
     <button onclick="showPenerimaan()" id="btnPenerimaan">
       Lap. Penerimaan RS
     </button>
+    <button onclick="showTabungan()" id="btnTabungan">Tabungan</button>
     <button onclick="logout()" style="background:#dc3545;">
       Logout
     </button>
@@ -329,13 +330,13 @@ textarea {
       <input type="hidden" name="token" value="RAHASIA123" />
 
       <label>Rumah Sakit</label>
-        <select name="nama_rs" required>
-          <option value="">Pilih Rumah Sakit</option>
-          <option value="RS Orthopedi Siaga Raya">RS Orthopedi Siaga Raya</option>
-          <option value="RS Bethsaida">RS Bethsaida</option>
-          <option value="RS Krakatau Medika">RS Krakatau Medika</option>
-          <option value="RS Primaya">RS Primaya</option>
-        </select>
+      <select name="nama_rs" required>
+        <option value="">Pilih Rumah Sakit</option>
+        <option value="RS Orthopedi Siaga Raya">RS Orthopedi Siaga Raya</option>
+        <option value="RS Bethsaida">RS Bethsaida</option>
+        <option value="RS Krakatau Medika">RS Krakatau Medika</option>
+        <option value="RS Primaya">RS Primaya</option>
+      </select>
 
       <label>Tanggal Operasi</label>
       <input type="date" name="tanggal_operasi" required />
@@ -363,10 +364,9 @@ textarea {
       <input type="hidden" name="jasa_operasi" id="jasa_operasi_hidden" />
 
       <div class="form-group">
-      <label>Upload Foto</label>
-      <input type="file" id="foto_operasi" accept="image/*" multiple>
+        <label>Upload Foto</label>
+        <input type="file" id="foto_operasi" accept="image/*" multiple>
       </div>
-
 
       <div id="previewFoto"></div>
 
@@ -448,10 +448,6 @@ textarea {
       <input type="text" id="total_penerimaan" required />
       <input type="hidden" name="total" id="total_hidden" />
 
-      <label>Pajak Dipotong RS (Rp)</label>
-      <input type="text" id="pajak_rs">
-      <input type="hidden" name="pajak_rs" id="pajak_rs_hidden">
-
       <label>Keterangan</label>
       <textarea name="keterangan"></textarea>
 
@@ -482,21 +478,103 @@ textarea {
       <option value="asc">Terlama</option>
     </select>
 
-    <!-- ✅ STATUS PAJAK -->
-    <select id="statusPajak" style="padding:5px;">
-      <option value="TK0">TK/0</option>
-      <option value="TK1">TK/1</option>
-      <option value="TK2">TK/2</option>
-      <option value="TK3">TK/3</option>
-      <option value="K0">K/0</option>
-      <option value="K1" selected>K/1</option>
-      <option value="K2">K/2</option>
-      <option value="K3">K/3</option>
+    <!-- filter bulam -->
+    <select id="filterBulan" style="padding:6px;">
+      <option value="">Semua Bulan</option>
+      <option value="1">Januari</option>
+      <option value="2">Februari</option>
+      <option value="3">Maret</option>
+      <option value="4">April</option>
+      <option value="5">Mei</option>
+      <option value="6">Juni</option>
+      <option value="7">Juli</option>
+      <option value="8">Agustus</option>
+      <option value="9">September</option>
+      <option value="10">Oktober</option>
+      <option value="11">November</option>
+      <option value="12">Desember</option>
     </select>
-
   </div>
 
     <div id="listPenerimaan" class="table-responsive" style="margin-top:20px;"></div>
+  </div>
+</div>
+
+<!-- tabungan -->
+<div id="tabunganSection" style="display:none;">
+  <div class="container">
+    <h3>Tabungan RS Bulanan</h3>
+
+    <form id="tabunganForm">
+      <label>Bulan</label>
+      <select name="bulan" required>
+        <option value="">Pilih Bulan</option>
+        <option value="1">Januari</option>
+        <option value="2">Februari</option>
+        <option value="3">Maret</option>
+        <option value="4">April</option>
+        <option value="5">Mei</option>
+        <option value="6">Juni</option>
+        <option value="7">Juli</option>
+        <option value="8">Agustus</option>
+        <option value="9">September</option>
+        <option value="10">Oktober</option>
+        <option value="11">November</option>
+        <option value="12">Desember</option>
+      </select>
+
+      <label>Tahun</label>
+      <input type="number" name="tahun" id="tahun_tabungan" required />
+
+      <label>Jumlah (Rp)</label>
+      <!-- <input type="text" id="total_tabungan" name="total" required /> -->
+
+      <input type="text" id="total_tabungan" placeholder="0" required />
+      <input type="hidden" id="total_tabungan_hidden" name="total" />
+
+      <label>Keterangan</label>
+      <textarea name="keterangan"></textarea>
+
+      <button type="submit" class="form-btn">Simpan</button>
+
+      <div class="spinner" id="spinnerTabungan" style="display:none;">Menyimpan...</div>
+      <div class="success" id="successTabungan" style="display:none;">Berhasil disimpan!</div>
+
+    </form>
+
+    <div class="spinner" id="spinnerLoadTabungan" style="display:none;">
+      Mengambil data tabungan...
+    </div>
+
+    <div style="margin-top:20px;">
+      <input type="text" id="searchTabungan" placeholder="Cari bulan/tahun..." style="padding:6px;width:40%;">
+      <select id="filterBulanTabungan" style="padding:6px;">
+        <option value="">Semua Bulan</option>
+        <option value="1">Januari</option>
+        <option value="2">Februari</option>
+        <option value="3">Maret</option>
+        <option value="4">April</option>
+        <option value="5">Mei</option>
+        <option value="6">Juni</option>
+        <option value="7">Juli</option>
+        <option value="8">Agustus</option>
+        <option value="9">September</option>
+        <option value="10">Oktober</option>
+        <option value="11">November</option>
+        <option value="12">Desember</option>
+      </select>
+
+      <select id="filterTahunTabungan" style="padding:6px;">
+        <option value="">Semua Tahun</option>
+      </select>
+
+      <select id="sortTabungan" style="padding:6px;">
+        <option value="desc">Terbaru</option>
+        <option value="asc">Terlama</option>
+      </select>
+    </div>
+
+    <div id="listTabungan" class="table-responsive" style="margin-top:20px;"></div>
   </div>
 </div>
 </div>
@@ -587,6 +665,7 @@ textarea {
       document.getElementById("btnForm").classList.remove("active");
       document.getElementById("btnLaporan").classList.remove("active");
       document.getElementById("btnPenerimaan").classList.remove("active");
+      document.getElementById("btnTabungan").classList.remove("active");
     }
 
     function showForm() {
@@ -595,6 +674,7 @@ textarea {
       document.getElementById("formSection").style.display = "block";
       document.getElementById("laporanSection").style.display = "none";
       document.getElementById("penerimaanSection").style.display = "none";
+      document.getElementById("tabunganSection").style.display = "none";
 
       document.getElementById("btnForm").classList.add("active");
     }
@@ -605,7 +685,7 @@ textarea {
       document.getElementById("formSection").style.display = "none";
       document.getElementById("laporanSection").style.display = "block";
       document.getElementById("penerimaanSection").style.display = "none";
-
+      document.getElementById("tabunganSection").style.display = "none";
       document.getElementById("btnLaporan").classList.add("active");
     }
 
@@ -614,12 +694,27 @@ textarea {
 
       document.getElementById("formSection").style.display = "none";
       document.getElementById("laporanSection").style.display = "none";
+      document.getElementById("tabunganSection").style.display = "none";
       document.getElementById("penerimaanSection").style.display = "block";
 
       document.getElementById("btnPenerimaan").classList.add("active");
 
       loadPenerimaan(); // ⬅ penting
     }
+
+    function showTabungan() {
+      resetMenu();
+
+      document.getElementById("formSection").style.display = "none";
+      document.getElementById("laporanSection").style.display = "none";
+      document.getElementById("penerimaanSection").style.display = "none";
+      document.getElementById("tabunganSection").style.display = "block";
+
+      document.getElementById("btnTabungan").classList.add("active");
+
+      loadTabungan()// ⬅ penting
+    }
+
     </script>
     <!-- ini form input -->
     <script>
@@ -733,30 +828,6 @@ textarea {
       }).join("");
 
       }
-
-
-
-
-
-    // let fotoHTML = "-";
-
-    //   if(row.foto){
-
-    //   const fotos = row.foto.split(",");
-
-    //   fotoHTML = fotos.map(id => {
-
-    //   id = id.trim();
-
-    //   let url = "https://drive.google.com/uc?export=view&id=" + id;
-
-    //   return `<img src="${url}"
-    //   style="width:60px;margin:2px;border-radius:4px;cursor:pointer;border:1px solid #ccc"
-    //   onclick="bukaFoto('${url}')">`;
-
-    //   }).join("");
-
-      // }
 
     let jasa = Number(row.jasa) || 0;
     totalJasaHitung += jasa;
@@ -873,7 +944,7 @@ textarea {
     </script>
           <!-- script edit -->
 
-          <script>
+  <script>
 
   function editData(id){
 
@@ -1110,6 +1181,7 @@ textarea {
       XLSX.writeFile(wb, fileName);
     }
     </script>
+
     <script>
       // angka Rp penerimaan
       const totalInput = document.getElementById("total_penerimaan");
@@ -1142,113 +1214,7 @@ textarea {
         });
       }
       </script>
-      <script>
-        function getPTKP(status){
-        const ptkp = {
-          TK0: 54000000,
-          TK1: 58500000,
-          TK2: 63000000,
-          TK3: 67500000,
-          K0: 58500000,
-          K1: 63000000,
-          K2: 67500000,
-          K3: 72000000
-        };
-        return ptkp[status] || 54000000;
-      }
-      </script>
-
-      <script>
-        // format pajak
-        const pajakInput = document.getElementById("pajak_rs");
-        const pajakHidden = document.getElementById("pajak_rs_hidden");
-
-        pajakInput.addEventListener("input", function () {
-          let value = this.value.replace(/\D/g, "");
-          pajakHidden.value = value;
-
-          if (value === "") {
-            this.value = "";
-            return;
-          }
-
-          this.value = new Intl.NumberFormat("id-ID").format(value);
-        });
-      </script>
-
-      <script>
-        // render status
-        document.getElementById("statusPajak")
-        .addEventListener("change", function(){
-          renderTable();
-        });
-      </script>
-
-      <script>
-        // hitung pajak
-        function hitungPajakTahunan(data, statusPajak){
-
-          let totalBruto = data.reduce((sum, d) => {
-            return sum + (Number(d.total) + Number(d.pajak_rs || 0));
-          }, 0);
-
-          // biaya jabatan 5% max 6jt
-          let biayaJabatan = totalBruto * 0.05;
-          if(biayaJabatan > 6000000) biayaJabatan = 6000000;
-
-          let netto = totalBruto - biayaJabatan;
-
-          // ✅ AMBIL PTKP SESUAI STATUS
-          let PTKP = getPTKP(statusPajak);
-
-          let pkp = netto - PTKP;
-          if(pkp < 0) pkp = 0;
-
-          // ======================
-          // HITUNG PROGRESIF
-          // ======================
-          let sisa = pkp;
-          let pajak = 0;
-
-          if(sisa > 0){
-            let lapis = Math.min(sisa, 60000000);
-            pajak += lapis * 0.05;
-            sisa -= lapis;
-          }
-
-          if(sisa > 0){
-            let lapis = Math.min(sisa, 190000000);
-            pajak += lapis * 0.15;
-            sisa -= lapis;
-          }
-
-          if(sisa > 0){
-            let lapis = Math.min(sisa, 250000000);
-            pajak += lapis * 0.25;
-            sisa -= lapis;
-          }
-
-          if(sisa > 0){
-            let lapis = Math.min(sisa, 4500000000);
-            pajak += lapis * 0.30;
-            sisa -= lapis;
-          }
-
-          if(sisa > 0){
-            pajak += sisa * 0.35;
-          }
-
-          return {
-            bruto: totalBruto,
-            biaya_jabatan: biayaJabatan,
-            netto: netto,
-            pkp: pkp,
-            ptkp: PTKP, // 🔥 tambahin ini biar bisa ditampilkan
-            pph21: pajak
-          };
-        }
-      </script>
-     
+  
      <script>
         document.getElementById("penerimaanForm")
         .addEventListener("submit", function(e){
@@ -1388,7 +1354,7 @@ function renderTable() {
   const tahun = document.getElementById("filterTahun").value;
   const sort = document.getElementById("sortPenerimaan").value;
   const rs = document.getElementById("filterRS").value;
-  const statusPajak = document.getElementById("statusPajak").value;
+  const bulanFilter = document.getElementById("filterBulan").value;
 
   const namaBulan = [
     "",
@@ -1414,6 +1380,11 @@ function renderTable() {
     data = data.filter(d => d.nama_rs === rs);
   }
 
+  // FILTER BULAN
+  if (bulanFilter) {
+    data = data.filter(d => String(d.bulan) === String(bulanFilter));
+  }
+
   // SORT
   data.sort((a, b) => {
     return sort === "desc"
@@ -1427,23 +1398,15 @@ function renderTable() {
   const start = (currentPage - 1) * perPage;
   const pageData = data.slice(start, start + perPage);
 
-  // TOTAL
+  // TOTAL NETTO
   let totalSemua = data.reduce((sum, d) => sum + (Number(d.total) || 0), 0);
-  let totalBruto = data.reduce((sum, d) => sum + (Number(d.total) + Number(d.pajak_rs || 0)), 0);
-  let totalPajakDipotong = data.reduce((sum, d) => sum + (Number(d.pajak_rs) || 0), 0);
-
-  // PAJAK
-  let pajakTahunan = hitungPajakTahunan(data, statusPajak);
-  let kurangLebihBayar = pajakTahunan.pph21 - totalPajakDipotong;
-  let warnaStatus = kurangLebihBayar > 0 ? "#ffdddd" : "#ddffdd";
 
   // ======================
   // HTML TABLE
   // ======================
   let html = `
     <div style="margin-bottom:10px; font-weight:bold;">
-      Total Netto: Rp ${totalSemua.toLocaleString("id-ID")} <br>
-      Total Bruto: Rp ${totalBruto.toLocaleString("id-ID")}
+      Total Pendapatan: Rp ${totalSemua.toLocaleString("id-ID")}
     </div>
 
     <button onclick="exportExcelPenerimaan()" 
@@ -1458,18 +1421,15 @@ function renderTable() {
           <th>RS</th>
           <th>Bulan</th>
           <th>Tahun</th>
-          <th>Netto</th>
-          <th>Pajak</th>
-          <th>Bruto</th>
+          <th>Total Pendapatan</th>
           <th>Keterangan</th>
         </tr>
   `;
 
   if (pageData.length === 0) {
-    html += `<tr><td colspan="8" align="center">Tidak ada data</td></tr>`;
+    html += `<tr><td colspan="6" align="center">Tidak ada data</td></tr>`;
   } else {
     pageData.forEach(row => {
-      let bruto = Number(row.total) + Number(row.pajak_rs || 0);
       const bulanText = namaBulan[Number(row.bulan)] || row.bulan;
 
       html += `
@@ -1482,8 +1442,6 @@ function renderTable() {
         <td>${bulanText}</td>
         <td>${row.tahun}</td>
         <td>Rp ${Number(row.total).toLocaleString()}</td>
-        <td>Rp ${Number(row.pajak_rs || 0).toLocaleString()}</td>
-        <td>Rp ${bruto.toLocaleString()}</td>
         <td>${row.keterangan || '-'}</td>
       </tr>`;
     });
@@ -1501,39 +1459,16 @@ function renderTable() {
   `;
 
   // ======================
-  // SIMULASI PAJAK
+  // SIMULASI NABUNG
   // ======================
   html += `
     <div style="margin-top:20px;">
-      <div style="margin-bottom:15px; padding:12px; background:#eef; border-left:5px solid #00f;">
-        <b>SIMULASI PAJAK (${statusPajak})</b><br><br>
-
-        Bruto: Rp ${pajakTahunan.bruto.toLocaleString("id-ID")}<br>
-        Biaya Jabatan: Rp ${pajakTahunan.biaya_jabatan.toLocaleString("id-ID")}<br>
-        Netto: Rp ${pajakTahunan.netto.toLocaleString("id-ID")}<br>
-
-        <span style="background:yellow; padding:2px 5px;">
-          PKP: Rp ${pajakTahunan.pkp.toLocaleString("id-ID")}
-        </span><br>
-
-        <b style="color:red;">
-          PPh 21: Rp ${pajakTahunan.pph21.toLocaleString("id-ID")}
-        </b>
-
-        <div style="font-size:12px; margin-top:8px; color:#333;">
-          • PKP = Netto - PTKP<br>
-          • PTKP (${statusPajak}) = Rp ${pajakTahunan.ptkp.toLocaleString("id-ID")}<br>
-          • Tarif progresif (5% - 35%)
-        </div>
-      </div>
-
-      <div style="margin-bottom:15px; padding:12px; background:${warnaStatus}; border-left:5px solid ${kurangLebihBayar > 0 ? "red" : "green"};">
-        Pajak Dipotong RS: Rp ${totalPajakDipotong.toLocaleString("id-ID")}<br>
-
-        <b style="color:${kurangLebihBayar > 0 ? "red" : "green"};">
-          ${kurangLebihBayar > 0 ? "Kurang Bayar" : "Lebih Bayar"}:
-          Rp ${Math.abs(kurangLebihBayar).toLocaleString("id-ID")}
-        </b>
+      <div style="margin-bottom:15px; padding:12px; background:#f0f0f0; border-left:5px solid #00a; 
+          display:grid; grid-template-columns:120px 10px auto; row-gap:4px; align-items:center;">
+        <div><b>Total Pendapatan</b></div><div>:</div><div>Rp ${totalSemua.toLocaleString("id-ID")}</div>
+        <div><b>5%</b></div><div>:</div><div>Rp ${(totalSemua * 0.05).toLocaleString("id-ID")}</div>
+        <div><b>10%</b></div><div>:</div><div>Rp ${(totalSemua * 0.10).toLocaleString("id-ID")}</div>
+        <div><b>15%</b></div><div>:</div><div>Rp ${(totalSemua * 0.15).toLocaleString("id-ID")}</div>
       </div>
     </div>
   `;
@@ -1547,8 +1482,8 @@ function renderTable() {
 const filterElements = [
   "filterRS",
   "filterTahun",
-  "statusPajak",
-  "searchPenerimaan"
+  "searchPenerimaan",
+  "filterBulan"
 ];
 
 filterElements.forEach(id => {
@@ -1592,11 +1527,6 @@ function prevPage() {
 
         document.getElementById("total_hidden").value = data.total;
 
-        document.getElementById("pajak_rs").value =
-          Number(data.pajak_rs || 0).toLocaleString("id-ID");
-
-        document.getElementById("pajak_rs_hidden").value = data.pajak_rs || 0;
-
         form.dataset.editId = id;
 
       }
@@ -1626,9 +1556,9 @@ function prevPage() {
     }
     </script>
     <script>
-      function exportExcelPenerimaan(){
+      function exportExcelPenerimaan() {
 
-  if(!window.penerimaanCache || window.penerimaanCache.length === 0){
+  if (!window.penerimaanCache || window.penerimaanCache.length === 0) {
     alert("Data kosong");
     return;
   }
@@ -1645,24 +1575,24 @@ function prevPage() {
     "Juli","Agustus","September","Oktober","November","Desember"
   ];
 
-  // 🔍 FILTER (biar sama kayak tampilan)
-  if(keyword){
+  // FILTER (sama seperti tampilan)
+  if (keyword) {
     data = data.filter(d =>
       d.nama_rs.toLowerCase().includes(keyword) ||
       (namaBulan[Number(d.bulan)] || "").toLowerCase().includes(keyword)
     );
   }
 
-  if(tahun){
+  if (tahun) {
     data = data.filter(d => String(d.tahun) === String(tahun));
   }
 
-  if(rs){
+  if (rs) {
     data = data.filter(d => d.nama_rs === rs);
   }
 
   // SORT
-  data.sort((a,b)=> b.tahun - a.tahun || b.bulan - a.bulan);
+  data.sort((a, b) => b.tahun - a.tahun || b.bulan - a.bulan);
 
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet([]);
@@ -1672,78 +1602,366 @@ function prevPage() {
   sheetData.push(["LAPORAN PENERIMAAN RS"]);
   sheetData.push([]);
 
+  // HEADER hanya Total Pendapatan + Keterangan
   sheetData.push([
-  "RS",
-  "Bulan",
-  "Tahun",
-  "Total (Netto)",
-  "Pajak RS",
-  "Bruto",
-  "Keterangan"
-]);
+    "RS",
+    "Bulan",
+    "Tahun",
+    "Total Pendapatan",
+    "Keterangan"
+  ]);
 
   let startRow = sheetData.length + 1;
 
   data.forEach(row => {
+    let total = Number(row.total) || 0;
 
-  let total = Number(row.total) || 0;
-  let pajak = Number(row.pajak_rs || 0);
-  let bruto = total + pajak;
-
-  sheetData.push([
-    row.nama_rs,
-    namaBulan[Number(row.bulan)],
-    row.tahun,
-    total,
-    pajak,
-    bruto,
-    row.keterangan || "-"
-  ]);
-});
+    sheetData.push([
+      row.nama_rs,
+      namaBulan[Number(row.bulan)],
+      row.tahun,
+      total,
+      row.keterangan || "-"
+    ]);
+  });
 
   let lastRow = sheetData.length;
 
-  // TOTAL
+  // TOTAL hanya Total Pendapatan
   sheetData.push([
     "",
     "",
     "TOTAL",
-    {f:`SUM(D${startRow}:D${lastRow})`}, // netto
-    {f:`SUM(E${startRow}:E${lastRow})`}, // pajak
-    {f:`SUM(F${startRow}:F${lastRow})`}, // bruto
+    { f: `SUM(D${startRow}:D${lastRow})` },
     ""
   ]);
 
-  XLSX.utils.sheet_add_aoa(ws, sheetData, {origin:"A1"});
+  XLSX.utils.sheet_add_aoa(ws, sheetData, { origin: "A1" });
 
-  // format uang
-  for(let i = startRow-1; i <= lastRow; i++){
-
-  [3,4,5].forEach(col => { // D,E,F
-    let cell = XLSX.utils.encode_cell({r:i, c:col});
-    if(ws[cell]){
+  // Format uang untuk kolom Total Pendapatan
+  for (let i = startRow - 1; i <= lastRow; i++) {
+    let cell = XLSX.utils.encode_cell({ r: i, c: 3 }); // kolom D
+    if (ws[cell]) {
       ws[cell].t = 'n';
       ws[cell].z = '"Rp"#,##0';
     }
-  });
-
-}
+  }
 
   ws["!cols"] = [
-  {wch:25},
-  {wch:15},
-  {wch:10},
-  {wch:18},
-  {wch:18},
-  {wch:18},
-  {wch:30}
-];
+    { wch: 25 }, // RS
+    { wch: 15 }, // Bulan
+    { wch: 10 }, // Tahun
+    { wch: 18 }, // Total Total Pendapatan
+    { wch: 30 }  // Keterangan
+  ];
 
   XLSX.utils.book_append_sheet(wb, ws, "Penerimaan");
 
   XLSX.writeFile(wb, "Laporan_Penerimaan_RS.xlsx");
 }
     </script>
+<!-- script tabungan -->
+<script>
+  // ==============================
+  // FORMAT RUPIAH DAN HIDDEN VALUE
+  // ==============================
+  const tabunganInput = document.getElementById("total_tabungan");
+  const tabunganHidden = document.getElementById("total_tabungan_hidden");
+
+  tabunganInput.addEventListener("input", function () {
+    let value = this.value.replace(/\D/g, ""); // hapus semua selain angka
+    tabunganHidden.value = value;             // nilai murni untuk dikirim ke server
+
+    if (value === "") {
+      this.value = "";
+      return;
+    }
+
+    // Format ribuan
+    this.value = new Intl.NumberFormat("id-ID").format(value);
+  });
+
+  // ==============================
+  // SUBMIT FORM TABUNGAN
+  // ==============================
+ document.getElementById("tabunganForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  if(sessionStorage.getItem("login") !== "true"){
+    alert("Silakan login terlebih dahulu.");
+    return;
+  }
+
+  const spinner = document.getElementById("spinnerTabungan");
+  const success = document.getElementById("successTabungan");
+
+  spinner.style.display = "block";
+  success.style.display = "none";
+
+  const formData = new FormData(this);
+  formData.append("token", "RAHASIA123");
+
+  const editId = this.dataset.editId;
+
+  if(editId){
+    formData.append("action", "update_tabungan");
+    formData.append("id", editId);
+  } else {
+    formData.append("action", "insert_tabungan");
+  }
+
+  formData.set("total", document.getElementById("total_tabungan_hidden").value);
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(res => {
+    if(res.result === "success"){
+
+      this.reset();
+      delete this.dataset.editId;
+
+      document.getElementById("total_tabungan").value = "";
+      document.getElementById("total_tabungan_hidden").value = "";
+
+      success.style.display = "block";
+
+      loadTabungan();
+    }
+  })
+  .catch(err => {
+    alert("Terjadi kesalahan koneksi.");
+    console.error(err);
+  })
+  .finally(() => {
+    spinner.style.display = "none";
+  });
+});
+</script>
+    <script>
+let currentPageTabungan = 1;
+const perPageTabungan = 12;
+
+// ======================
+function loadTabungan() {
+  const spinner = document.getElementById("spinnerLoadTabungan");
+  const list = document.getElementById("listTabungan");
+
+  spinner.style.display = "block";
+  list.innerHTML = "";
+
+  fetch(SCRIPT_URL + "?action=get_tabungan")
+    .then(res => res.json())
+    .then(res => {
+
+      if (res.result !== "success") {
+        list.innerHTML = "Gagal load data tabungan";
+        return;
+      }
+
+      window.tabunganCache = res.data || [];
+
+      isiFilterTahunTabungan(res.data);
+
+      currentPageTabungan = 1;
+      renderTableTabungan();
+    })
+    .catch(err => {
+      list.innerHTML = "Error koneksi";
+      console.error(err);
+    })
+    .finally(() => {
+      spinner.style.display = "none";
+    });
+}
+
+// ======================
+function isiFilterTahunTabungan(data) {
+  const select = document.getElementById("filterTahunTabungan");
+
+  let tahunUnik = [...new Set(data.map(d => d.tahun))].sort((a,b)=>b-a);
+
+  select.innerHTML = `<option value="">Semua Tahun</option>`;
+
+  tahunUnik.forEach(t => {
+    select.innerHTML += `<option value="${t}">${t}</option>`;
+  });
+}
+
+// ======================
+function renderTableTabungan() {
+  const list = document.getElementById("listTabungan");
+  let data = [...(window.tabunganCache || [])];
+
+  const keyword = document.getElementById("searchTabungan").value.toLowerCase();
+  const tahun = document.getElementById("filterTahunTabungan").value;
+  const bulanFilter = document.getElementById("filterBulanTabungan").value;
+
+  const namaBulan = ["","Januari","Februari","Maret","April","Mei","Juni",
+  "Juli","Agustus","September","Oktober","November","Desember"];
+
+  if(keyword){
+    data = data.filter(d =>
+      (namaBulan[Number(d.bulan)] || "").toLowerCase().includes(keyword)
+    );
+  }
+
+  if(tahun) data = data.filter(d => String(d.tahun) === String(tahun));
+  if(bulanFilter) data = data.filter(d => String(d.bulan) === String(bulanFilter));
+
+  data.sort((a,b)=> (b.tahun - a.tahun) || (b.bulan - a.bulan));
+
+  const totalPage = Math.ceil(data.length / perPageTabungan) || 1;
+  if(currentPageTabungan > totalPage) currentPageTabungan = totalPage;
+
+  const start = (currentPageTabungan - 1) * perPageTabungan;
+  const pageData = data.slice(start, start + perPageTabungan);
+
+  let totalSemua = data.reduce((sum,d)=> sum + (Number(d.total)||0),0);
+
+  let html = `
+    <div style="margin-bottom:10px;font-weight:bold;">
+      Total Tabungan: Rp ${totalSemua.toLocaleString("id-ID")}
+    </div>
+
+    <table border="1" width="100%" cellpadding="5">
+      <tr>
+        <th>Aksi</th>
+        <th>Bulan</th>
+        <th>Tahun</th>
+        <th>Total</th>
+        <th>Keterangan</th>
+      </tr>
+  `;
+
+  if(pageData.length === 0){
+    html += `<tr><td colspan="5">Tidak ada data</td></tr>`;
+  } else {
+    pageData.forEach(row=>{
+      html += `<tr>
+        <td>
+          <button onclick="editTabungan('${row.id}')">Edit</button>
+          <button onclick="hapusTabungan('${row.id}')">Hapus</button>
+        </td>
+        <td>${namaBulan[row.bulan]}</td>
+        <td>${row.tahun}</td>
+        <td>Rp ${Number(row.total).toLocaleString()}</td>
+        <td>${row.keterangan || '-'}</td>
+      </tr>`;
+    });
+  }
+
+  html += `</table>`;
+
+  html += `
+    <div style="margin-top:10px;text-align:center;">
+      <button onclick="prevPageTabungan()" ${currentPageTabungan===1?'disabled':''}>Prev</button>
+      Halaman ${currentPageTabungan} / ${totalPage}
+      <button onclick="nextPageTabungan()" ${currentPageTabungan>=totalPage?'disabled':''}>Next</button>
+    </div>
+  `;
+
+  list.innerHTML = html;
+}
+
+// ======================
+// LISTENER FILTER TABUNGAN (INI YANG KURANG ❗)
+// ======================
+const filterTabunganElements = [
+  "searchTabungan",
+  "filterTahunTabungan",
+  "filterBulanTabungan"
+];
+
+filterTabunganElements.forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const eventType = id === "searchTabungan" ? "input" : "change";
+
+  el.addEventListener(eventType, () => {
+    currentPageTabungan = 1;
+    renderTableTabungan();
+  });
+});
+
+// ======================
+function nextPageTabungan(){
+  currentPageTabungan++;
+  renderTableTabungan();
+}
+
+function prevPageTabungan(){
+  currentPageTabungan--;
+  renderTableTabungan();
+}
+
+// ======================
+document.getElementById("total_tabungan").addEventListener("input", function () {
+  let value = this.value.replace(/\D/g, "");
+
+  if (value === "") {
+    this.value = "";
+    return;
+  }
+
+  this.value = new Intl.NumberFormat("id-ID").format(value);
+});
+</script>
+
+<!-- script edit tabungan -->
+<script>
+  function editTabungan(id){
+
+  const data = window.tabunganCache.find(d => String(d.id) === String(id));
+  if(!data) return;
+
+  const form = document.getElementById("tabunganForm");
+
+  form.bulan.value = data.bulan;
+  form.tahun.value = data.tahun;
+  form.keterangan.value = data.keterangan || "";
+
+  document.getElementById("total_tabungan").value =
+    Number(data.total).toLocaleString("id-ID");
+
+  document.getElementById("total_tabungan_hidden").value = data.total;
+
+  form.dataset.editId = id;
+}
+</script>
+
+<!-- script hapus tabungan -->
+ <script>
+  function hapusTabungan(id){
+
+  if(!confirm("Yakin hapus data ini?")) return;
+
+  const formData = new FormData();
+  formData.append("token", "RAHASIA123");
+  formData.append("action", "delete_tabungan");
+  formData.append("id", id);
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(res => {
+    if(res.result === "success"){
+      alert("Berhasil dihapus");
+      loadTabungan();
+    }
+  });
+}
+ </script>
+ <!-- tahun tabungan -->
+  <script>
+    // set tahun otomatis tabungan
+document.getElementById("tahun_tabungan").value = new Date().getFullYear();
+  </script>
           <!-- script logout -->
     <script>
       function logout(auto = false){
@@ -1913,7 +2131,12 @@ function prevPage() {
       if(editId){
         formData.append("action", "update");
         formData.append("id", editId);
+      }else{
+        formData.append("action", "insert"); // 🔥 INI YANG KURANG
       }
+
+      // 🔥 TAMBAH INI
+      // console.log("KIRIM FOTO:", fotoBase64List);
 
       fetch(SCRIPT_URL,{
         method:"POST",
