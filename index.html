@@ -765,7 +765,8 @@ textarea {
     return `${day}/${month}/${year}`;
     }
 
-    fetch(`${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`)
+    // fetch(`${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`)
+    fetch(`${SCRIPT_URL}?action=get_operasi&nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`)
     .then(response => response.json())
     .then(data => {
 
@@ -2100,7 +2101,7 @@ document.getElementById("tahun_tabungan").value = new Date().getFullYear();
   </script>
     <script>
       const SCRIPT_URL =
-      "https://script.google.com/macros/s/AKfycbzbsoNc8kjjO9ltGpedgsCGEvzYY6_VQd8b2WYPIlshCHn_cWbDXdvFWvueYYs94RWy/exec";
+      "https://script.google.com/macros/s/AKfycby_fO-v03XzEwmEMlnev_cy9bROTxDW0SYuCgoQTRrZNGsbiTcGNH6P0Eya7DSBVrBe/exec";
 
       document.getElementById("operasiForm")
       .addEventListener("submit", function (e) {
