@@ -309,7 +309,7 @@ textarea {
       Form Input
     </button>
     <button onclick="showLaporan()" id="btnLaporan">
-      Lap. Detail Operasi
+      Lap. Detail Pelayanan
     </button>
     <button onclick="showPenerimaan()" id="btnPenerimaan">
       Lap. Penerimaan RS
@@ -321,75 +321,270 @@ textarea {
   </div>
 </nav>
 
-<!-- FORM SECTION -->
+<!-- FORM SECTION Operasi -->
 <div id="formSection">
   <div class="container">
-    <h2>Form Input Data Operasi</h2>
 
-    <form id="operasiForm">
+    <h2>Form Input Data</h2>
+
+    <form
+      id="operasiForm"
+      novalidate
+      onsubmit="return false;"
+      >
+
       <input type="hidden" name="token" value="RAHASIA123" />
 
+      <!-- JENIS LAYANAN -->
+      <label>Jenis Layanan</label>
+      <select name="jenis_layanan" id="jenis_layanan" required>
+        <option value="operasi">Operasi</option>
+        <option value="poliklinik">Poliklinik</option>
+      </select>
+
+      <!-- RS -->
       <label>Rumah Sakit</label>
       <select name="nama_rs" required>
         <option value="">Pilih Rumah Sakit</option>
-        <option value="RS Orthopedi Siaga Raya">RS Orthopedi Siaga Raya</option>
-        <option value="RS Bethsaida">RS Bethsaida</option>
-        <option value="RS Krakatau Medika">RS Krakatau Medika</option>
-        <option value="RS Primaya">RS Primaya</option>
+        <option value="RS Orthopedi Siaga Raya">
+          RS Orthopedi Siaga Raya
+        </option>
+
+        <option value="RS Bethsaida">
+          RS Bethsaida
+        </option>
+
+        <option value="RS Krakatau Medika">
+          RS Krakatau Medika
+        </option>
+
+        <option value="RS Primaya">
+          RS Primaya
+        </option>
       </select>
 
-      <label>Tanggal Operasi</label>
-      <input type="date" name="tanggal_operasi" required />
+      <!-- TANGGAL -->
+      <label id="labelTanggal">
+        Tanggal Operasi
+      </label>
+      
+      <input
+        type="date"
+        id="tanggal_operasi"
+        name="tanggal_operasi"
+        autocomplete="off"
+        formnovalidate
+      />
 
+      <!-- PASIEN -->
       <label>Nama Pasien</label>
-      <input type="text" name="nama_pasien" required />
 
+      <input
+        type="text"
+        name="nama_pasien"
+        required
+      />
+
+      <!-- DIAGNOSA -->
       <label>Diagnosa</label>
-      <textarea name="diagnosa" required></textarea>
 
+      <textarea
+        name="diagnosa"
+        required
+      ></textarea>
+
+      <!-- TINDAKAN -->
       <label>Tindakan</label>
-      <textarea name="tindakan" required></textarea>
 
+      <textarea
+        name="tindakan"
+        required
+      ></textarea>
+
+      <!-- JAMINAN -->
       <label>Jaminan</label>
+
       <select name="jaminan" required>
-        <option value="">Pilih Jaminan</option>
-        <option value="Umum">Umum</option>
-        <option value="Asuransi">Asuransi</option>
-        <option value="BPJS TK">BPJS TK</option>
-        <option value="BPJS Kesehatan">BPJS Kesehatan</option>
+
+        <option value="">
+          Pilih Jaminan
+        </option>
+
+        <option value="Umum">
+          Umum
+        </option>
+
+        <option value="Asuransi">
+          Asuransi
+        </option>
+
+        <option value="BPJS TK">
+          BPJS TK
+        </option>
+
+        <option value="BPJS Kesehatan">
+          BPJS Kesehatan
+        </option>
+
       </select>
 
-      <label>Jasa Operasi (Rp)</label>
-      <input type="text" id="jasa_operasi" required />
-      <input type="hidden" name="jasa_operasi" id="jasa_operasi_hidden" />
 
+      <!-- ================= JASA OPERASI ================= -->
+      <div id="jasaOperasiSection">
+
+        <label id="labelJasa">
+          Jasa Operasi (Rp)
+        </label>
+
+        <input
+          type="text"
+          id="jasa_operasi"
+          required
+        />
+
+        <input
+          type="hidden"
+          name="jasa_operasi"
+          id="jasa_operasi_hidden"
+        />
+
+      </div>
+
+
+      <!-- ================= JASA POLIKLINIK ================= -->
+      <div
+        id="jasaPoliSection"
+        style="display:none;"
+      >
+
+        <!-- KONSULTASI -->
+        <label>Jasa Konsultasi</label>
+
+        <div style="display:flex; gap:10px;">
+
+          <input
+            type="text"
+            id="konsultasi"
+            placeholder="Nominal"
+            style="flex:2;"
+          >
+
+          <input
+            type="number"
+            id="diskon_konsultasi"
+            placeholder="Diskon %"
+            value="0"
+            style="flex:1;"
+          >
+
+        </div>
+
+        <input
+          type="hidden"
+          id="konsultasi_hidden"
+        >
+
+
+        <!-- TINDAKAN -->
+        <label>Jasa Tindakan</label>
+
+        <div style="display:flex; gap:10px;">
+
+          <input
+            type="text"
+            id="tindakan_jasa"
+            placeholder="Nominal"
+            style="flex:2;"
+          >
+
+          <input
+            type="number"
+            id="diskon_tindakan"
+            placeholder="Diskon %"
+            value="0"
+            style="flex:1;"
+          >
+
+        </div>
+
+        <input
+          type="hidden"
+          id="tindakan_hidden"
+        >
+
+      </div>
+
+
+      <!-- FOTO -->
       <div class="form-group">
+
         <label>Upload Foto</label>
-        <input type="file" id="foto_operasi" accept="image/*" multiple>
+
+        <input
+          type="file"
+          id="foto_operasi"
+          accept="image/*"
+          multiple
+        >
+
       </div>
 
       <div id="previewFoto"></div>
 
-      <button type="submit" class="form-btn">Simpan Data</button>
 
-      <div class="spinner" id="spinner">Menyimpan data...</div>
-      <div class="success" id="successMsg">Data berhasil disimpan!</div>
+      <!-- BUTTON -->
+      <!-- <button
+        type="submit"
+        class="form-btn"
+      >
+        Simpan Data
+      </button> -->
+
+      <button
+        type="button"
+        class="form-btn"
+        onclick="submitFormManual()"
+      >
+        Simpan Data
+      </button>
+
+
+      <!-- LOADING -->
+      <div class="spinner" id="spinner">
+        Menyimpan data...
+      </div>
+
+      <div class="success" id="successMsg">
+        Data berhasil disimpan!
+      </div>
+
     </form>
   </div>
 </div>
-<!-- LAPORAN SECTION -->
+<!-- LAPORAN Operasi SECTION -->
 <div id="laporanSection" style="display:none;">
   <div class="container">
-    <h3>Laporan Operasi</h3>
+    <h3>Laporan Pelayanan</h3>
 
     <label>Rumah Sakit</label>
     <select id="lap_nama_rs">
-      <option value="">Pilih Rumah Sakit</option>
+      <!-- <option >Pilih Rumah Sakit</option> -->
+      <option value="">Semua Rumah Sakit</option>
       <option value="RS Orthopedi Siaga Raya">RS Orthopedi Siaga Raya</option>
       <option value="RS Bethsaida">RS Bethsaida</option>
       <option value="RS Krakatau Medika">RS Krakatau Medika</option>
       <option value="RS Primaya">RS Primaya</option>
     </select>
+    <br><br>
+
+    <label>Jenis Layanan</label>
+
+    <select id="lap_jenis">
+      <option value="">Pilih Jenis Layanan</option>
+      <option value="operasi">Operasi</option>
+      <option value="poliklinik">Poliklinik</option>
+    </select>
+
     <br><br>
 
     <label>Tanggal Awal</label>
@@ -605,61 +800,85 @@ textarea {
 
     <!-- iniscript login -->
  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-    <script>
-    function login(){
+ <script>
+// ================= CONFIG =================
+window.APP = {
+  SUPABASE_URL: "https://bicgneywlttowehtkyro.supabase.co",
+  SUPABASE_KEY: "sb_publishable_fVW5CAXTYzLjFeWruAds2Q_dGXNZV5C"
+};
 
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-      const btn = document.getElementById("loginBtn");
-      const spinner = document.getElementById("spinnerlogin");
+// ================= HASH PASSWORD =================
+async function hashPassword(password){
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
 
-      if(!username || !password){
-        alert("Username dan Password wajib diisi");
-        return;
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+// ================= LOGIN =================
+async function login(){
+
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+
+  if(!usernameInput || !passwordInput){
+    alert("Form login tidak ditemukan");
+    return;
+  }
+
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value;
+
+  if(!username || !password){
+    alert("Username dan password wajib diisi");
+    return;
+  }
+
+  try {
+
+    const hashed = await hashPassword(password);
+
+    const url = `${window.APP.SUPABASE_URL}/rest/v1/users?select=*&username=eq.${encodeURIComponent(username)}&password=eq.${hashed}`;
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        apikey: window.APP.SUPABASE_KEY,
+        Authorization: "Bearer " + window.APP.SUPABASE_KEY
+      }
+    });
+
+    if(!res.ok){
+      throw new Error("Gagal koneksi");
+    }
+
+    const data = await res.json();
+
+    if(Array.isArray(data) && data.length > 0){
+
+      sessionStorage.setItem("login","true");
+
+      document.getElementById("loginWrapper").style.display = "none";
+      document.getElementById("mainSection").style.display = "block";
+
+      if(typeof startAutoLogout === "function"){
+        startAutoLogout();
       }
 
-      // 🔄 Aktifkan loading
-      btn.disabled = true;
-      spinner.style.display = "block";
-
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: new URLSearchParams({
-          action: "login",
-          username: username,
-          password: password
-        })
-      })
-      .then(res => res.json())
-      .then(res => {
-
-        btn.disabled = false;
-        spinner.style.display = "none";
-
-        if(res.result === "success"){
-
-          startAutoLogout();
-
-          sessionStorage.setItem("login", "true");
-          sessionStorage.setItem("role", res.role);
-          sessionStorage.setItem("username", res.username);
-
-          document.getElementById("loginWrapper").style.display = "none";
-          document.getElementById("mainSection").style.display = "block";
-
-        } else {
-          alert("Username atau Password salah");
-        }
-
-      })
-      .catch(err => {
-        btn.disabled = false;
-        spinner.style.display = "none";
-        alert("Terjadi kesalahan koneksi.");
-      });
+    } else {
+      alert("Username atau password salah");
     }
-    </script>
-    <!-- ini show form -->
+
+  } catch(err){
+    alert("Terjadi kesalahan saat login");
+  }
+}
+</script>
+           
+      <!-- ini show form -->
     <script>
     function resetMenu(){
       document.getElementById("btnForm").classList.remove("active");
@@ -716,8 +935,140 @@ textarea {
     }
 
     </script>
+    <!-- form baru -->
+     <script>
+// ================= FORMAT RUPIAH =================
+function formatRupiah(inputId, hiddenId){
+
+  const input =
+    document.getElementById(inputId);
+
+  const hidden =
+    document.getElementById(hiddenId);
+
+  if(!input || !hidden) return;
+
+  input.addEventListener("input", function(){
+
+    let value =
+      this.value.replace(/\D/g,"");
+
+    hidden.value = value;
+
+    if(!value){
+
+      this.value = "";
+
+      return;
+    }
+
+    this.value =
+      new Intl.NumberFormat("id-ID")
+      .format(value);
+
+  });
+
+}
+
+
+// ================= INIT FORMAT =================
+formatRupiah(
+  "jasa_operasi",
+  "jasa_operasi_hidden"
+);
+
+formatRupiah(
+  "konsultasi",
+  "konsultasi_hidden"
+);
+
+formatRupiah(
+  "tindakan_jasa",
+  "tindakan_hidden"
+);
+
+
+// ================= GANTI FORM =================
+document
+.getElementById("jenis_layanan")
+.addEventListener("change", function(){
+
+  const jenis = this.value;
+
+  const labelTanggal =
+    document.getElementById("labelTanggal");
+
+  const labelJasa =
+    document.getElementById("labelJasa");
+
+  const jasaOperasiSection =
+    document.getElementById("jasaOperasiSection");
+
+  const jasaPoliSection =
+    document.getElementById("jasaPoliSection");
+
+  // ================= POLIKLINIK =================
+  if(jenis === "poliklinik"){
+
+    labelTanggal.innerText =
+      "Tanggal Poliklinik";
+
+    labelJasa.innerText =
+      "Jasa Poliklinik";
+
+    jasaOperasiSection.style.display =
+      "none";
+
+    jasaPoliSection.style.display =
+      "block";
+
+    // ================= FIX REQUIRED =================
+    document.getElementById(
+      "jasa_operasi"
+    ).required = false;
+
+    document.getElementById(
+      "konsultasi"
+    ).required = false;
+
+    document.getElementById(
+      "tindakan_jasa"
+    ).required = false;
+
+  }
+
+  // ================= OPERASI =================
+  else {
+
+    labelTanggal.innerText =
+      "Tanggal Operasi";
+
+    labelJasa.innerText =
+      "Jasa Operasi (Rp)";
+
+    jasaOperasiSection.style.display =
+      "block";
+
+    jasaPoliSection.style.display =
+      "none";
+
+    // ================= FIX REQUIRED =================
+    document.getElementById(
+      "jasa_operasi"
+    ).required = true;
+
+  }
+
+});
+
+
+// ================= DEFAULT LOAD =================
+document
+.getElementById("jenis_layanan")
+.dispatchEvent(new Event("change"));
+</script>
     <!-- ini form input -->
-    <script>
+    <!-- <script>
           const jasaInput = document.getElementById("jasa_operasi");
           const jasaHidden = document.getElementById("jasa_operasi_hidden");
 
@@ -732,456 +1083,1332 @@ textarea {
 
             this.value = new Intl.NumberFormat("id-ID").format(value);
           });
-    </script>
+    </script> -->
         <!-- get laporan -->
-    <script>
-      function getLaporan(){
 
-    if(sessionStorage.getItem("login") !== "true"){
-    alert("Silakan login terlebih dahulu.");
-    return;
-    }
+        <script>
+      let currentPageLaporan = 1;
+      let perPageLaporan = 10; // ✅ jumlah data per halaman (bisa ubah)
+      </script>
+        <script>
+function renderLaporan(
+  data,
+  nama_rs,
+  jenis,
+  tgl_awal,
+  tgl_akhir
+){
 
-    const spinner = document.getElementById("spinner2");
-    const hasil = document.getElementById("hasilLaporan");
+  const hasil =
+    document.getElementById("hasilLaporan");
 
-    const nama_rs = document.getElementById("lap_nama_rs").value;
-    const tgl_awal = document.getElementById("lap_tgl_awal").value;
-    const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
+  function formatTanggal(tgl){
 
-    if (!nama_rs || !tgl_awal || !tgl_akhir) {
-    alert("Lengkapi semua field laporan!");
-    return;
-    }
+    if(!tgl) return "-";
 
-    spinner.style.display = "block";
-    hasil.innerHTML = "";
-
-    function formatTanggal(tgl) {
     const d = new Date(tgl);
-    const day = String(d.getDate()).padStart(2,'0');
-    const month = String(d.getMonth()+1).padStart(2,'0');
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
+
+    return d.toLocaleDateString("id-ID");
+  }
+
+  // ================= PAGINATION =================
+  const totalData =
+    data.length;
+
+  const totalPage =
+    Math.ceil(totalData / perPageLaporan) || 1;
+
+  if(currentPageLaporan > totalPage){
+
+    currentPageLaporan = totalPage;
+  }
+
+  const start =
+    (currentPageLaporan - 1)
+    * perPageLaporan;
+
+  const pageData =
+    data.slice(
+      start,
+      start + perPageLaporan
+    );
+
+  // ================= SUMMARY =================
+  let umum = 0;
+  let asuransi = 0;
+  let bpjsTK = 0;
+  let bpjsKes = 0;
+
+  let totalJasa = 0;
+
+  data.forEach(row => {
+
+    let jasa = 0;
+
+    // ================= OPERASI =================
+    if(row.jenis_layanan === "operasi"){
+
+      jasa =
+        Number(row.jasa_operasi) || 0;
     }
 
-    // fetch(`${SCRIPT_URL}?nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`)
-    fetch(`${SCRIPT_URL}?action=get_operasi&nama_rs=${encodeURIComponent(nama_rs)}&tgl_awal=${tgl_awal}&tgl_akhir=${tgl_akhir}`)
-    .then(response => response.json())
-    .then(data => {
+    // ================= POLIKLINIK =================
+    else {
 
-    window.laporanCache = data;
+      const konsultasi =
+        Number(row.konsultasi) || 0;
 
-    let tabel = `
-    <table border="1" cellpadding="5" cellspacing="0" width="100%">
-    <thead>
-    <tr style="background:#f2f2f2;">
-    <th>Aksi</th>
-    <th>Tanggal</th>
-    <th>Pasien</th>
-    <th>Diagnosa</th>
-    <th>Tindakan</th>
-    <th>Jaminan</th>
-    <th>Jasa</th>
-    <th>Foto</th>
-    </tr>
-    </thead>
-    <tbody>
+      const tindakan =
+        Number(row.tindakan_jasa) || 0;
+
+      const diskonKonsul =
+        Number(row.diskon_konsultasi) || 0;
+
+      const diskonTindakan =
+        Number(row.diskon_tindakan) || 0;
+
+      const totalKonsul =
+        konsultasi -
+        (konsultasi * diskonKonsul / 100);
+
+      const totalTindakan =
+        tindakan -
+        (tindakan * diskonTindakan / 100);
+
+      jasa =
+        totalKonsul +
+        totalTindakan;
+    }
+
+    totalJasa += jasa;
+
+    switch(row.jaminan){
+
+      case "Umum":
+        umum++;
+      break;
+
+      case "Asuransi":
+        asuransi++;
+      break;
+
+      case "BPJS TK":
+        bpjsTK++;
+      break;
+
+      case "BPJS Kesehatan":
+        bpjsKes++;
+      break;
+    }
+
+  });
+
+  // ================= TABLE =================
+  const isSemuaRS =
+    !nama_rs ||
+    nama_rs === "SEMUA RS";
+
+  // ================= HEADER DINAMIS =================
+  let headerTambahan = "";
+  let isiTambahan = "";
+  let colspanTotal = 0;
+
+  // ================= OPERASI =================
+  if(jenis === "operasi"){
+
+    headerTambahan = `
+      <th>Jasa Operasi</th>
     `;
 
-    let totalJasaHitung = 0;
+    colspanTotal =
+      isSemuaRS ? 8 : 7;
+  }
 
-    if(data.detail && data.detail.length > 0){
+  // ================= POLIKLINIK =================
+  else if(jenis === "poliklinik"){
 
-    data.detail.sort((a,b)=> new Date(a.tanggal) - new Date(b.tanggal));
+    headerTambahan = `
+      <th>Konsultasi</th>
+      <th>Disc Konsul</th>
+      <th>Tindakan</th>
+      <th>Disc Tindakan</th>
+      <th>Total</th>
+    `;
 
-    data.detail.forEach(row => {
+    colspanTotal =
+      isSemuaRS ? 11 : 10;
+  }
 
-      // console.log("FOTO RAW:", row.foto);
-      // console.log(row.foto);console.log(url);
+  // ================= SEMUA =================
+  else {
 
-      let fotoHTML = "-";
+    headerTambahan = `
+      <th>Jenis</th>
+      <th>Total Jasa</th>
+    `;
 
-      if (row.foto) {
+    colspanTotal =
+      isSemuaRS ? 9 : 8;
+  }
 
-      const fotos = row.foto.split(",");
+  let tabel = `
+  <table border="1" width="100%" cellpadding="5">
 
-      fotoHTML = fotos.map(id => {
+    <tr>
 
-      id = id.trim();
+      <th>Aksi</th>
 
-      let thumb = "https://drive.google.com/thumbnail?id=" + id + "&sz=w120";
-      let full  = "https://lh3.googleusercontent.com/d/" + id;
+      ${isSemuaRS ? "<th>RS</th>" : ""}
 
-      return `<img src="${thumb}"
-      style="
-      width:60px;
-      height:60px;
-      object-fit:cover;
-      margin:2px;
-      border-radius:6px;
-      cursor:pointer;
-      border:1px solid #ccc;
-      "
-      loading="lazy"
-      onclick="bukaFoto('${full}')">`;
-
-      }).join("");
-
+      ${jenis !== "semua"
+        ? ""
+        : "<th>Jenis</th>"
       }
 
-    let jasa = Number(row.jasa) || 0;
-    totalJasaHitung += jasa;
+      <th>Tanggal</th>
+      <th>Pasien</th>
+      <th>Diagnosa</th>
+      <th>Tindakan</th>
+      <th>Jaminan</th>
+
+      ${headerTambahan}
+
+      <th>Foto</th>
+
+    </tr>
+  `;
+
+  // ================= DATA KOSONG =================
+  if(pageData.length === 0){
 
     tabel += `
     <tr>
-    <td>
-    <button onclick="editData('${row.id}')">Edit</button>
-    <button onclick="hapusData('${row.id}')">Hapus</button>
-    </td>
-    <td>${formatTanggal(row.tanggal)}</td>
-    <td>${row.pasien}</td>
-    <td>${row.diagnosa}</td>
-    <td>${row.tindakan}</td>
-    <td>${row.jaminan}</td>
-    <td style="text-align:right;">Rp ${jasa.toLocaleString()}</td>
-    <td>${fotoHTML}</td>
+      <td colspan="15">
+        Tidak ada data
+      </td>
     </tr>
     `;
+  }
 
-    });
+  // ================= LOOP DATA =================
+  pageData.forEach(row => {
 
-    }else{
+    let jasa = 0;
 
-    tabel += `
-    <tr>
-    <td colspan="8" style="text-align:center;">Tidak ada data</td>
-    </tr>
-    `;
+    const konsultasi =
+      Number(row.konsultasi) || 0;
 
+    const tindakanJasa =
+      Number(row.tindakan_jasa) || 0;
+
+    const diskonKonsul =
+      Number(row.diskon_konsultasi) || 0;
+
+    const diskonTindakan =
+      Number(row.diskon_tindakan) || 0;
+
+    const totalKonsul =
+      konsultasi -
+      (konsultasi * diskonKonsul / 100);
+
+    const totalTindakan =
+      tindakanJasa -
+      (tindakanJasa * diskonTindakan / 100);
+
+    // ================= OPERASI =================
+    if(row.jenis_layanan === "operasi"){
+
+      jasa =
+        Number(row.jasa_operasi) || 0;
+    }
+
+    // ================= POLIKLINIK =================
+    else {
+
+      jasa =
+        totalKonsul +
+        totalTindakan;
+    }
+
+    // ================= FOTO =================
+    let fotoHTML = "-";
+
+    if(row.foto_urls){
+
+      const fotos =
+        row.foto_urls.split(",");
+
+      fotoHTML =
+        fotos.map(url => `
+
+        <img
+          src="${url}"
+
+          style="
+            width:60px;
+            height:60px;
+            object-fit:cover;
+            margin:2px;
+            border-radius:6px;
+            cursor:pointer;
+          "
+
+          onclick="bukaFoto('${url}')"
+        >
+
+      `).join("");
+    }
+
+    // ================= ISI TAMBAHAN =================
+    isiTambahan = "";
+
+    // ================= OPERASI =================
+    if(jenis === "operasi"){
+
+      isiTambahan = `
+        <td>
+          Rp ${jasa.toLocaleString("id-ID")}
+        </td>
+      `;
+    }
+
+    // ================= POLIKLINIK =================
+    else if(jenis === "poliklinik"){
+
+      isiTambahan = `
+
+        <td>
+          Rp ${konsultasi.toLocaleString("id-ID")}
+        </td>
+
+        <td>
+          ${diskonKonsul}%
+        </td>
+
+        <td>
+          Rp ${tindakanJasa.toLocaleString("id-ID")}
+        </td>
+
+        <td>
+          ${diskonTindakan}%
+        </td>
+
+        <td>
+          Rp ${jasa.toLocaleString("id-ID")}
+        </td>
+      `;
+    }
+
+    // ================= SEMUA =================
+    else {
+
+      isiTambahan = `
+
+        <td>
+          ${row.jenis_layanan || "-"}
+        </td>
+
+        <td>
+          Rp ${jasa.toLocaleString("id-ID")}
+        </td>
+      `;
     }
 
     tabel += `
+
     <tr>
-    <td colspan="6" style="text-align:right;font-weight:bold;">TOTAL JASA</td>
-    <td style="text-align:right;font-weight:bold;">
-    Rp ${totalJasaHitung.toLocaleString()}
-    </td>
-    <td></td>
+
+      <td>
+
+        <button onclick="editData('${row.id}')">
+          Edit
+        </button>
+
+        <button onclick="hapusData('${row.id}')">
+          Hapus
+        </button>
+
+      </td>
+
+      ${isSemuaRS
+        ? `<td>${row.nama_rs || "-"}</td>`
+        : ""
+      }
+
+      ${jenis !== "semua"
+        ? ""
+        : `
+        <td>
+          ${row.jenis_layanan || "-"}
+        </td>
+      `
+      }
+
+      <td>
+        ${formatTanggal(row.tanggal_operasi)}
+      </td>
+
+      <td>
+        ${row.nama_pasien || "-"}
+      </td>
+
+      <td>
+        ${row.diagnosa || "-"}
+      </td>
+
+      <td>
+        ${row.tindakan || "-"}
+      </td>
+
+      <td>
+        ${row.jaminan || "-"}
+      </td>
+
+      ${isiTambahan}
+
+      <td>
+        ${fotoHTML}
+      </td>
+
     </tr>
-    </tbody>
-    </table>
     `;
+  });
 
-    hasil.innerHTML = `
+  // ================= FOOTER TOTAL =================
+  tabel += `
 
-    <div style="text-align:right;margin-top:10px;">
-    <button onclick="downloadExcel()" style="padding:6px 14px;cursor:pointer;">
-    Download Excel
-    </button>
+    <tr>
+
+      <td
+        colspan="${colspanTotal}"
+        align="right"
+      >
+        <b>TOTAL</b>
+      </td>
+
+      <td>
+        <b>
+          Rp ${totalJasa.toLocaleString("id-ID")}
+        </b>
+      </td>
+
+      <td></td>
+
+    </tr>
+
+  </table>
+  `;
+
+  // ================= JUDUL =================
+  let judul =
+    "SEMUA LAYANAN";
+
+  if(jenis === "operasi"){
+
+    judul = "OPERASI";
+  }
+
+  if(jenis === "poliklinik"){
+
+    judul = "POLIKLINIK";
+  }
+
+  // ================= RENDER =================
+  hasil.innerHTML = `
+
+    <div
+      style="
+        text-align:right;
+        margin-top:10px;
+      "
+    >
+
+      <button
+        onclick="downloadExcel()"
+
+        style="
+          padding:6px 14px;
+          cursor:pointer;
+        "
+      >
+        Download Excel
+      </button>
+
     </div>
 
-    <h3>Laporan ${nama_rs}</h3>
+    <h3>
+      LAPORAN ${judul}
+    </h3>
 
-    <b>Periode :</b> ${formatTanggal(tgl_awal)} s/d ${formatTanggal(tgl_akhir)}
+    <b>Rumah Sakit:</b>
+    ${nama_rs ? nama_rs : "SEMUA RS"}
 
-    <hr>
+    <br>
 
-    <b>Total Operasi :</b> ${data.total_operasi}<br><br>
+    <b>Periode:</b>
+    ${formatTanggal(tgl_awal)}
+    -
+    ${formatTanggal(tgl_akhir)}
 
-    <b>Rincian Jaminan :</b><br>
+    <br><br>
 
-    Umum : ${data.umum}<br>
-    Asuransi : ${data.asuransi}<br>
-    BPJS TK : ${data.bpjs}<br>
-    BPJS Kesehatan : ${data.bpjskesehatan}<br><br>
+    <b>Total Data:</b>
+    ${totalData}
 
-    <b>Total Jasa Operasi : Rp ${totalJasaHitung.toLocaleString()}</b>
+    <br><br>
+
+    <b>Rincian Jaminan:</b>
+
+    <br>
+
+    Umum : ${umum}
+
+    <br>
+
+    Asuransi : ${asuransi}
+
+    <br>
+
+    BPJS TK : ${bpjsTK}
+
+    <br>
+
+    BPJS Kesehatan : ${bpjsKes}
+
+    <br><br>
+
+    <b>Total Jasa:</b>
+
+    Rp ${totalJasa.toLocaleString("id-ID")}
 
     <br><br>
 
     ${tabel}
 
-    `;
+    <div
+      style="
+        margin-top:10px;
+        text-align:center;
+      "
+    >
 
-    })
-    .catch(err=>{
-    alert("Gagal mengambil laporan.");
-    console.error(err);
-    })
-    .finally(()=>{
-    spinner.style.display = "none";
+      <button
+        onclick="prevPageLaporan()"
+
+        ${currentPageLaporan===1
+          ? 'disabled'
+          : ''
+        }
+      >
+        Prev
+      </button>
+
+      Halaman
+      ${currentPageLaporan}
+      /
+      ${totalPage}
+
+      <button
+        onclick="nextPageLaporan()"
+
+        ${currentPageLaporan>=totalPage
+          ? 'disabled'
+          : ''
+        }
+      >
+        Next
+      </button>
+
+    </div>
+  `;
+}
+</script>
+
+
+       
+   <script>
+function nextPageLaporan(){
+
+  currentPageLaporan++;
+
+  renderLaporan(
+    window.laporanCache,
+    document.getElementById("lap_nama_rs").value,
+    document.getElementById("lap_jenis").value,
+    document.getElementById("lap_tgl_awal").value,
+    document.getElementById("lap_tgl_akhir").value
+  );
+}
+
+function prevPageLaporan(){
+
+  currentPageLaporan--;
+
+  renderLaporan(
+    window.laporanCache,
+    document.getElementById("lap_nama_rs").value,
+    document.getElementById("lap_jenis").value,
+    document.getElementById("lap_tgl_awal").value,
+    document.getElementById("lap_tgl_akhir").value
+  );
+}
+</script>
+   <script>
+async function getLaporan(){
+
+  const spinner =
+    document.getElementById("spinner2");
+
+  const hasil =
+    document.getElementById("hasilLaporan");
+
+  const nama_rs =
+    document.getElementById("lap_nama_rs").value;
+
+  const jenis =
+    document.getElementById("lap_jenis").value;
+
+  const tgl_awal =
+    document.getElementById("lap_tgl_awal").value;
+
+  const tgl_akhir =
+    document.getElementById("lap_tgl_akhir").value;
+
+  // ================= VALIDASI =================
+  if(!jenis){
+
+    alert("Pilih jenis layanan!");
+
+    return;
+  }
+
+  if(!tgl_awal || !tgl_akhir){
+
+    alert("Tanggal wajib diisi!");
+
+    return;
+  }
+
+  spinner.style.display = "block";
+
+  hasil.innerHTML = "";
+
+  try {
+
+    // ================= URL =================
+    let url =
+      `${SUPABASE_URL}/rest/v1/data_operasi?` +
+      `tanggal_operasi=gte.${tgl_awal}` +
+      `&tanggal_operasi=lte.${tgl_akhir}` +
+      `&jenis_layanan=eq.${jenis}` +
+      `&order=tanggal_operasi.asc`;
+
+    // ================= FILTER RS =================
+    if(nama_rs){
+
+      url +=
+        `&nama_rs=eq.${encodeURIComponent(nama_rs)}`;
+    }
+
+    // ================= FETCH =================
+    const res = await fetch(url, {
+
+      headers: {
+        apikey: SUPABASE_KEY,
+
+        Authorization:
+          "Bearer " + SUPABASE_KEY,
+      }
     });
 
-    }
-    </script>
+    const data =
+      await res.json();
+
+    // ================= CACHE =================
+    window.laporanCache = data;
+
+    currentPageLaporan = 1;
+
+    // ================= RENDER =================
+    renderLaporan(
+      data,
+      nama_rs,
+      jenis,
+      tgl_awal,
+      tgl_akhir
+    );
+
+  } catch(err){
+
+    console.error(err);
+
+    alert("Gagal ambil data");
+
+  } finally {
+
+    spinner.style.display = "none";
+  }
+}
+</script>
       
       <!-- script hapus -->
-    <script>
-          function hapusData(id){
+<script>
+// ================= HAPUS DATA =================
+async function hapusData(id){
 
-            if(!confirm("Yakin ingin hapus data ini?")) return;
+  if(!confirm("Yakin ingin hapus data ini?")){
+    return;
+  }
 
-            const formData = new FormData();
-            formData.append("token", "RAHASIA123");
-            formData.append("action", "delete");
-            formData.append("id", id);
+  try {
 
-            fetch(SCRIPT_URL, {
-              method: "POST",
-              body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-              if(data.result === "success"){
-                alert("Data berhasil dihapus");
-                getLaporan();
-              } else {
-                alert("Gagal hapus data");
-                console.log(data);
-              }
-            });
-          }
-    </script>
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/data_operasi?id=eq.${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization:
+            "Bearer " + SUPABASE_KEY
+        }
+      }
+    );
+
+    if(!res.ok){
+      throw new Error();
+    }
+
+    alert("Data berhasil dihapus");
+
+    getLaporan();
+
+  } catch(err){
+
+    console.error(err);
+
+    alert("Gagal hapus data");
+  }
+
+}
+</script>
           <!-- script edit -->
 
-  <script>
+ <script>
+// ================= EDIT DATA =================
+function editData(id){
 
-  function editData(id){
+  const data =
+    window.laporanCache.find(
+      d => String(d.id) === String(id)
+    );
 
-  console.log("Edit ID:", id);
-
-  if(!window.laporanCache || !window.laporanCache.detail){
+  if(!data){
     alert("Data tidak ditemukan");
     return;
   }
 
-  const data = window.laporanCache.detail.find(d => String(d.id) === String(id));
-
-  if(!data){
-    alert("Data tidak ditemukan di cache");
-    return;
-  }
-
-  // pindah ke form
   showForm();
 
-  // isi form
-  document.querySelector('[name="nama_rs"]').value =
-    document.getElementById("lap_nama_rs").value;
+  const form =
+    document.getElementById("operasiForm");
 
-  document.querySelector('[name="tanggal_operasi"]').value = data.tanggal;
-  document.querySelector('[name="nama_pasien"]').value = data.pasien;
-  document.querySelector('[name="diagnosa"]').value = data.diagnosa;
-  document.querySelector('[name="tindakan"]').value = data.tindakan;
-  document.querySelector('[name="jaminan"]').value = data.jaminan;
+  // ================= BASIC =================
+  form.nama_rs.value =
+    data.nama_rs || "";
 
-  document.getElementById("jasa_operasi").value =
-    Number(data.jasa).toLocaleString("id-ID");
+  form.tanggal_operasi.value =
+    data.tanggal_operasi || "";
 
-  document.getElementById("jasa_operasi_hidden").value = data.jasa;
+  form.nama_pasien.value =
+    data.nama_pasien || "";
 
-  const form = document.getElementById("operasiForm");
-  form.dataset.editId = id;
+  form.diagnosa.value =
+    data.diagnosa || "";
 
+  form.tindakan.value =
+    data.tindakan || "";
 
-  // ======================
-  // TAMPILKAN FOTO LAMA
-  // ======================
+  form.jaminan.value =
+    data.jaminan || "";
 
-  const preview = document.getElementById("previewFoto");
+  // ================= JENIS =================
+  const jenis =
+    data.jenis_layanan || "operasi";
+
+  form.jenis_layanan.value = jenis;
+
+  // trigger change
+  document.getElementById("jenis_layanan")
+    .dispatchEvent(new Event("change"));
+
+  // ================= OPERASI =================
+  if(jenis === "operasi"){
+
+    document.getElementById("jasa_operasi")
+      .value =
+      Number(data.jasa_operasi || 0)
+      .toLocaleString("id-ID");
+
+    document.getElementById("jasa_operasi_hidden")
+      .value =
+      data.jasa_operasi || 0;
+  }
+
+  // ================= POLIKLINIK =================
+  else {
+
+    document.getElementById("konsultasi")
+      .value =
+      Number(data.konsultasi || 0)
+      .toLocaleString("id-ID");
+
+    document.getElementById("konsultasi_hidden")
+      .value =
+      data.konsultasi || 0;
+
+    document.getElementById("diskon_konsultasi")
+      .value =
+      data.diskon_konsultasi || 0;
+
+    document.getElementById("tindakan_jasa")
+      .value =
+      Number(data.tindakan_jasa || 0)
+      .toLocaleString("id-ID");
+
+    document.getElementById("tindakan_hidden")
+      .value =
+      data.tindakan_jasa || 0;
+
+    document.getElementById("diskon_tindakan")
+      .value =
+      data.diskon_tindakan || 0;
+  }
+
+  // ================= EDIT ID =================
+  form.dataset.editId = data.id;
+
+  // ================= FOTO =================
+  const preview =
+    document.getElementById("previewFoto");
+
   preview.innerHTML = "";
 
   let fotoArray = [];
 
-  if(data.foto){
+  if(data.foto_urls){
 
-  fotoArray = data.foto.split(",").map(f => f.trim());
+    fotoArray =
+      data.foto_urls.split(",");
 
-  fotoArray.forEach((fid,index)=>{
+    fotoArray.forEach((url,index)=>{
 
-  let thumb = "https://drive.google.com/thumbnail?id=" + fid + "&sz=w200";
-  let full  = "https://lh3.googleusercontent.com/d/" + fid;
+      const box =
+        document.createElement("div");
 
-  const box = document.createElement("div");
-  box.style.position = "relative";
-  box.style.display = "inline-block";
-  box.style.margin = "5px";
+      box.style.display = "inline-block";
+      box.style.position = "relative";
+      box.style.margin = "5px";
 
-  const img = document.createElement("img");
-  img.src = thumb;
-  img.style.width = "80px";
-  img.style.height = "80px";
-  img.style.objectFit = "cover";
-  img.style.borderRadius = "6px";
-  img.style.cursor = "pointer";
-  img.style.border = "1px solid #ccc";
+      const img =
+        document.createElement("img");
 
-  img.onclick = function(){
-    bukaFoto(full);
-  };
+      img.src = url;
 
-  const btn = document.createElement("div");
-  btn.innerHTML = "✖";
-  btn.style.position = "absolute";
-  btn.style.top = "-6px";
-  btn.style.right = "-6px";
-  btn.style.background = "red";
-  btn.style.color = "white";
-  btn.style.width = "20px";
-  btn.style.height = "20px";
-  btn.style.borderRadius = "50%";
-  btn.style.fontSize = "12px";
-  btn.style.display = "flex";
-  btn.style.alignItems = "center";
-  btn.style.justifyContent = "center";
-  btn.style.cursor = "pointer";
+      img.style.width = "80px";
+      img.style.height = "80px";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "6px";
+      img.style.cursor = "pointer";
 
-  btn.onclick = function(){
+      img.onclick = () => bukaFoto(url);
 
-  fotoArray.splice(index,1);
+      const btn =
+        document.createElement("div");
 
-  form.dataset.fotoLama = fotoArray.join(",");
+      btn.innerHTML = "✖";
 
-  box.remove();
+      btn.style.position = "absolute";
+      btn.style.top = "0";
+      btn.style.right = "0";
+      btn.style.background = "red";
+      btn.style.color = "white";
+      btn.style.padding = "2px 5px";
+      btn.style.cursor = "pointer";
+      btn.style.borderRadius = "0 6px 0 6px";
 
-  };
+      btn.onclick = function(){
 
-  box.appendChild(img);
-  box.appendChild(btn);
+        fotoArray.splice(index,1);
 
-  preview.appendChild(box);
+        form.dataset.fotoLama =
+          fotoArray.join(",");
 
-  });
+        box.remove();
+      };
 
+      box.appendChild(img);
+      box.appendChild(btn);
+
+      preview.appendChild(box);
+    });
   }
 
-  form.dataset.fotoLama = fotoArray.join(",");
-
-  }
-
+  form.dataset.fotoLama =
+    fotoArray.join(",");
+}
 </script>
 
-      <!-- ini download report -->
-    <script>
-      function downloadExcel() {
+      <script>
+function downloadExcel() {
 
-      if (!window.laporanCache) {
-        alert("Data belum tersedia.");
-        return;
-      }
+  if (!window.laporanCache || window.laporanCache.length === 0) {
+    alert("Data kosong");
+    return;
+  }
 
-      const nama_rs = document.getElementById("lap_nama_rs").value;
-      const tgl_awal = document.getElementById("lap_tgl_awal").value;
-      const tgl_akhir = document.getElementById("lap_tgl_akhir").value;
+  const nama_rs =
+    document.getElementById("lap_nama_rs").value || "SEMUA RS";
 
-      function formatTanggal(tgl) {
-        const d = new Date(tgl);
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth()+1).padStart(2, '0');
-        const year = d.getFullYear();
-        return `${day}/${month}/${year}`;
-      }
+  const jenis =
+    document.getElementById("lap_jenis").value;
 
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.aoa_to_sheet([]);
+  const tgl_awal =
+    document.getElementById("lap_tgl_awal").value;
 
-      let data = [];
+  const tgl_akhir =
+    document.getElementById("lap_tgl_akhir").value;
 
-      data.push(["LAPORAN OPERASI"]);
-      data.push([nama_rs]);
-      data.push([`Periode : ${formatTanggal(tgl_awal)} s/d ${formatTanggal(tgl_akhir)}`]);
-      data.push([]);
+  function formatTanggal(tgl) {
 
-      data.push(["Total Operasi :", window.laporanCache.total_operasi || 0]);
-      data.push(["Umum :", window.laporanCache.umum || 0]);
-      data.push(["Asuransi :", window.laporanCache.asuransi || 0]);
-      data.push(["BPJS TK :", window.laporanCache.bpjs || 0]);
-      data.push(["BPJS Kesehatan :", window.laporanCache.bpjskesehatan || 0]);
-      data.push([]);
+    if (!tgl) return "-";
 
-      data.push(["Tanggal","Pasien","Diagnosa","Tindakan","Jaminan","Jasa"]);
+    const d = new Date(tgl);
 
-      let startDataRow = data.length + 1;
+    return `${String(d.getDate()).padStart(2,'0')}/${
+      String(d.getMonth()+1).padStart(2,'0')
+    }/${d.getFullYear()}`;
+  }
 
-      let tempData = [];
+  function hitungJasa(row) {
 
-      if (window.laporanCache.detail && window.laporanCache.detail.length > 0) {
-        window.laporanCache.detail.forEach(row => {
-          tempData.push({
-            tanggalObj: new Date(row.tanggal),
-            pasien: row.pasien,
-            diagnosa: row.diagnosa,
-            tindakan: row.tindakan,
-            jaminan: row.jaminan,
-            jasa: Number(row.jasa) || 0
-          });
-        });
-      }
+    const konsultasi =
+      Number(row.konsultasi) || 0;
 
-      // SORT TANGGAL
-      tempData.sort((a,b) => a.tanggalObj - b.tanggalObj);
+    const tindakan =
+      Number(row.tindakan_jasa) || 0;
 
-      tempData.forEach(item => {
-        data.push([
-          item.tanggalObj,
-          item.pasien,
-          item.diagnosa,
-          item.tindakan,
-          item.jaminan,
-          item.jasa
-        ]);
+    const diskonKonsul =
+      Number(row.diskon_konsultasi) || 0;
+
+    const diskonTindakan =
+      Number(row.diskon_tindakan) || 0;
+
+    const totalKonsul =
+      konsultasi -
+      (konsultasi * diskonKonsul / 100);
+
+    const totalTindakan =
+      tindakan -
+      (tindakan * diskonTindakan / 100);
+
+    // OPERASI
+    if (row.jenis_layanan === "operasi") {
+
+      return Number(row.jasa_operasi) || 0;
+    }
+
+    // POLIKLINIK
+    return totalKonsul + totalTindakan;
+  }
+
+  const wb =
+    XLSX.utils.book_new();
+
+  const ws =
+    XLSX.utils.aoa_to_sheet([]);
+
+  let sheetData = [];
+
+  // ================= HEADER =================
+  sheetData.push([
+    `LAPORAN ${jenis.toUpperCase()}`
+  ]);
+
+  sheetData.push([
+    nama_rs
+  ]);
+
+  sheetData.push([
+    `Periode : ${formatTanggal(tgl_awal)} s/d ${formatTanggal(tgl_akhir)}`
+  ]);
+
+  sheetData.push([]);
+
+  // ================= SUMMARY =================
+  let umum = 0;
+  let asuransi = 0;
+  let bpjsTK = 0;
+  let bpjsKes = 0;
+
+  let totalJasa = 0;
+
+  window.laporanCache.forEach(row => {
+
+    const jasa =
+      hitungJasa(row);
+
+    totalJasa += jasa;
+
+    switch (row.jaminan) {
+
+      case "Umum":
+        umum++;
+      break;
+
+      case "Asuransi":
+        asuransi++;
+      break;
+
+      case "BPJS TK":
+        bpjsTK++;
+      break;
+
+      case "BPJS Kesehatan":
+        bpjsKes++;
+      break;
+    }
+  });
+
+  sheetData.push([
+    "Umum :",
+    umum
+  ]);
+
+  sheetData.push([
+    "Asuransi :",
+    asuransi
+  ]);
+
+  sheetData.push([
+    "BPJS TK :",
+    bpjsTK
+  ]);
+
+  sheetData.push([
+    "BPJS Kesehatan :",
+    bpjsKes
+  ]);
+
+  sheetData.push([]);
+
+  sheetData.push([
+    "Total Data :",
+    window.laporanCache.length
+  ]);
+
+  sheetData.push([
+    "Total Jasa :",
+    totalJasa
+  ]);
+
+  sheetData.push([]);
+
+  // ================= HEADER TABLE =================
+  let header = [
+    "Tanggal",
+    "RS",
+    "Pasien",
+    "Diagnosa",
+    "Tindakan",
+    "Jaminan"
+  ];
+
+  // OPERASI
+  if (jenis === "operasi") {
+
+    header.push(
+      "Jasa Operasi"
+    );
+  }
+
+  // POLIKLINIK
+  else if (jenis === "poliklinik") {
+
+    header.push(
+      "Konsultasi",
+      "Disc Konsul",
+      "Tindakan",
+      "Disc Tindakan",
+      "Total"
+    );
+  }
+
+  // SEMUA
+  else {
+
+    header.push(
+      "Jenis",
+      "Total Jasa"
+    );
+  }
+
+  sheetData.push(header);
+
+  let startRow =
+    sheetData.length + 1;
+
+  // ================= DATA =================
+  let dataSorted =
+    [...window.laporanCache];
+
+  dataSorted.sort((a, b) =>
+
+    new Date(a.tanggal_operasi) -
+    new Date(b.tanggal_operasi)
+  );
+
+  dataSorted.forEach(row => {
+
+    const jasa =
+      hitungJasa(row);
+
+    let base = [
+
+      new Date(row.tanggal_operasi),
+
+      row.nama_rs,
+
+      row.nama_pasien,
+
+      row.diagnosa,
+
+      row.tindakan,
+
+      row.jaminan
+    ];
+
+    // OPERASI
+    if (jenis === "operasi") {
+
+      base.push(jasa);
+    }
+
+    // POLIKLINIK
+    else if (jenis === "poliklinik") {
+
+      base.push(
+
+        Number(row.konsultasi) || 0,
+
+        Number(row.diskon_konsultasi) || 0,
+
+        Number(row.tindakan_jasa) || 0,
+
+        Number(row.diskon_tindakan) || 0,
+
+        jasa
+      );
+    }
+
+    // SEMUA
+    else {
+
+      base.push(
+        row.jenis_layanan,
+        jasa
+      );
+    }
+
+    sheetData.push(base);
+  });
+
+  let lastRow =
+    sheetData.length;
+
+  // ================= TOTAL ROW =================
+  let totalRow =
+    new Array(header.length).fill("");
+
+  totalRow[totalRow.length - 2] =
+    "TOTAL";
+
+  totalRow[totalRow.length - 1] = {
+
+    f:
+      `SUM(${
+        XLSX.utils.encode_col(totalRow.length - 1)
+      }${startRow}:${
+        XLSX.utils.encode_col(totalRow.length - 1)
+      }${lastRow})`
+  };
+
+  sheetData.push(totalRow);
+
+  XLSX.utils.sheet_add_aoa(
+    ws,
+    sheetData,
+    { origin: "A1" }
+  );
+
+  // ================= WIDTH =================
+  ws["!cols"] = header.map(() => ({
+    wch: 18
+  }));
+
+  // ================= FORMAT RP TABLE =================
+  const lastCol =
+    header.length - 1;
+
+  // FORMAT SEMUA DATA JASA
+  for (
+    let r = startRow - 1;
+    r < lastRow;
+    r++
+  ) {
+
+    // TOTAL / JASA
+    const totalCell =
+      XLSX.utils.encode_cell({
+        r,
+        c: lastCol
       });
 
-      let lastRow = data.length;
+    if (ws[totalCell]) {
 
-      // TOTAL JASA (pakai rumus)
-      data.push(["","","","","TOTAL JASA :", {f:`SUM(F${startDataRow}:F${lastRow})`}]);
+      ws[totalCell].t = "n";
 
-      let totalRowIndex = data.length - 1;
-
-      XLSX.utils.sheet_add_aoa(ws, data, {origin:"A1"});
-
-      // Lebar kolom
-      ws["!cols"] = [
-        { wch: 12 },
-        { wch: 20 },
-        { wch: 40 },
-        { wch: 40 },
-        { wch: 12 },
-        { wch: 18 }
-      ];
-
-      // FORMAT TANGGAL & UANG
-      for(let R = startDataRow-1; R <= lastRow-1; ++R){
-
-        let dateCell = XLSX.utils.encode_cell({r:R, c:0});
-        if(ws[dateCell]){
-          ws[dateCell].z = "dd/mm/yyyy";
-        }
-
-        let moneyCell = XLSX.utils.encode_cell({r:R, c:5});
-        if(ws[moneyCell]){
-          ws[moneyCell].t = 'n';
-          ws[moneyCell].z = '"Rp"#,##0';
-        }
-      }
-
-      // FORMAT TOTAL JASA JADI Rp
-      let totalCell = XLSX.utils.encode_cell({r: totalRowIndex, c:5});
-      if(ws[totalCell]){
-        ws[totalCell].t = 'n';
-        ws[totalCell].z = '"Rp"#,##0';
-      }
-
-      XLSX.utils.book_append_sheet(wb, ws, "Laporan");
-
-      const safeRS = nama_rs.replace(/\s+/g, "_");
-      const fileName = `Laporan_${safeRS}_${tgl_awal}_sd_${tgl_akhir}.xlsx`;
-
-      XLSX.writeFile(wb, fileName);
+      ws[totalCell].z =
+        '"Rp" #,##0';
     }
-    </script>
+
+    // ================= KHUSUS POLIKLINIK =================
+    if (jenis === "poliklinik") {
+
+      // konsultasi
+      const konsultasiCell =
+        XLSX.utils.encode_cell({
+          r,
+          c: 6
+        });
+
+      if (ws[konsultasiCell]) {
+
+        ws[konsultasiCell].t = "n";
+
+        ws[konsultasiCell].z =
+          '"Rp" #,##0';
+      }
+
+      // disc konsultasi
+      const discKonsulCell =
+        XLSX.utils.encode_cell({
+          r,
+          c: 7
+        });
+
+      if (ws[discKonsulCell]) {
+
+        ws[discKonsulCell].t = "n";
+
+        ws[discKonsulCell].z =
+          '0"%"';
+      }
+
+      // tindakan
+      const tindakanCell =
+        XLSX.utils.encode_cell({
+          r,
+          c: 8
+        });
+
+      if (ws[tindakanCell]) {
+
+        ws[tindakanCell].t = "n";
+
+        ws[tindakanCell].z =
+          '"Rp" #,##0';
+      }
+
+      // disc tindakan
+      const discTindakanCell =
+        XLSX.utils.encode_cell({
+          r,
+          c: 9
+        });
+
+      if (ws[discTindakanCell]) {
+
+        ws[discTindakanCell].t = "n";
+
+        ws[discTindakanCell].z =
+          '0"%"';
+      }
+    }
+  }
+
+  // ================= FORMAT TOTAL FOOTER =================
+  const totalRowIndex =
+    sheetData.length - 1;
+
+  const totalCellRef =
+    XLSX.utils.encode_cell({
+
+      r: totalRowIndex,
+
+      c: lastCol
+    });
+
+  if (ws[totalCellRef]) {
+
+    ws[totalCellRef].t = "n";
+
+    ws[totalCellRef].z =
+      '"Rp" #,##0';
+  }
+
+  // ================= FORMAT SUMMARY TOTAL JASA =================
+  const summaryRowIndex =
+    sheetData.findIndex(
+      r => r[0] === "Total Jasa :"
+    );
+
+  if (summaryRowIndex !== -1) {
+
+    const summaryCellRef =
+      XLSX.utils.encode_cell({
+
+        r: summaryRowIndex,
+
+        c: 1
+      });
+
+    if (ws[summaryCellRef]) {
+
+      ws[summaryCellRef].t = "n";
+
+      ws[summaryCellRef].z =
+        '"Rp" #,##0';
+    }
+  }
+
+  // ================= APPEND =================
+  XLSX.utils.book_append_sheet(
+    wb,
+    ws,
+    "Laporan"
+  );
+
+  const safeRS =
+    nama_rs.replace(/\s+/g, "_");
+
+  XLSX.writeFile(
+
+    wb,
+
+    `Laporan_${jenis}_${safeRS}_${tgl_awal}_sd_${tgl_akhir}.xlsx`
+  );
+}
+</script>
 
     <script>
       // angka Rp penerimaan
@@ -1215,70 +2442,89 @@ textarea {
         });
       }
       </script>
-  
-     <script>
+      <script>
         document.getElementById("penerimaanForm")
-        .addEventListener("submit", function(e){
+.addEventListener("submit", async function(e){
 
-          e.preventDefault();
+  e.preventDefault();
 
-          if(sessionStorage.getItem("login") !== "true"){
-            alert("Silakan login terlebih dahulu.");
-            return;
-          }
+  if(sessionStorage.getItem("login") !== "true"){
+    alert("Silakan login terlebih dahulu.");
+    return;
+  }
 
-          const spinner = document.getElementById("spinnerPenerimaan");
-          const success = document.getElementById("successPenerimaan");
+  const spinner = document.getElementById("spinnerPenerimaan");
+  const success = document.getElementById("successPenerimaan");
 
-          spinner.style.display = "block";
-          success.style.display = "none";
+  spinner.style.display = "block";
+  success.style.display = "none";
 
-          const formData = new FormData(this);
-          formData.append("token", "RAHASIA123");
+  const form = this;
 
-          // 🔥 INI BAGIAN PENTING (EDIT / INSERT)
-          const editId = this.dataset.editId;
+  try {
 
-          if(editId){
-            formData.append("action", "update_penerimaan");
-            formData.append("id", editId);
-          }else{
-            formData.append("action", "insert_penerimaan");
-          }
+    const total = document.getElementById("total_hidden").value;
 
-          fetch(SCRIPT_URL,{
-            method:"POST",
-            body:formData
-          })
-          .then(res=>res.json())
-          .then(res=>{
+    if(!total){
+      alert("Total belum diisi!");
+      return;
+    }
 
-            if(res.result === "success"){
+    const editId = form.dataset.editId;
 
-              this.reset();
-              delete this.dataset.editId; // ⬅ reset mode edit
+    let method = "POST";
+    let url = SUPABASE_URL + "/rest/v1/penerimaan_rs";
 
-              document.getElementById("total_penerimaan").value = "";
-              document.getElementById("tahun_input").value = new Date().getFullYear();
+    if(editId){
+      method = "PATCH";
+      url += "?id=eq." + editId;
+    }
 
-              success.style.display = "block";
+    const res = await fetch(url, {
+      method: method,
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json",
+        Prefer: "return=representation"
+      },
+      body: JSON.stringify({
+        nama_rs: form.nama_rs.value,
+        bulan: Number(form.bulan.value),
+        tahun: Number(form.tahun.value),
+        total: Number(total),
+        keterangan: form.keterangan.value
+      })
+    });
 
-              // 🔄 reload data biar update kelihatan
-              loadPenerimaan();
+    if(!res.ok){
+      const err = await res.text();
+      console.error(err);
+      throw new Error("Gagal simpan");
+    }
 
-            }
+    // SUCCESS
+    form.reset();
+    delete form.dataset.editId;
 
-          })
-          .catch(err=>{
-            alert("Error koneksi");
-            console.error(err);
-          })
-          .finally(()=>{
-            spinner.style.display = "none";
-          });
+    document.getElementById("total_penerimaan").value = "";
+    document.getElementById("total_hidden").value = "";
+    document.getElementById("tahun_input").value = new Date().getFullYear();
 
-        });
-        </script>
+    success.style.display = "block";
+
+    loadPenerimaan(); // reload data
+
+  } catch(err){
+    alert("Gagal simpan ke Supabase");
+    console.error(err);
+  } finally {
+    spinner.style.display = "none";
+  }
+
+});
+      </script>
+
  <script>
 let currentPage = 1;
 const perPage = 12;
@@ -1286,36 +2532,42 @@ const perPage = 12;
 // ======================
 // LOAD DATA PENERIMAAN
 // ======================
-function loadPenerimaan() {
+async function loadPenerimaan(){
+
   const spinner = document.getElementById("spinnerLoadPenerimaan");
   const list = document.getElementById("listPenerimaan");
 
   spinner.style.display = "block";
   list.innerHTML = "";
 
-  fetch(SCRIPT_URL + "?action=get_penerimaan")
-    .then(res => res.json())
-    .then(res => {
-      if (res.result !== "success") {
-        list.innerHTML = "Gagal load data";
-        return;
+  try {
+
+    const res = await fetch(
+      SUPABASE_URL + "/rest/v1/penerimaan_rs?select=*",
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: "Bearer " + SUPABASE_KEY,
+        }
       }
+    );
 
-      window.penerimaanCache = res.data || [];
+    const data = await res.json();
 
-      isiFilterTahun(res.data);
-      isiFilterRS(res.data);
+    window.penerimaanCache = data || [];
 
-      currentPage = 1;
-      renderTable();
-    })
-    .catch(err => {
-      list.innerHTML = "Error koneksi";
-      console.error(err);
-    })
-    .finally(() => {
-      spinner.style.display = "none";
-    });
+    isiFilterTahun(data);
+    isiFilterRS(data);
+
+    currentPage = 1;
+    renderTable();
+
+  } catch(err){
+    list.innerHTML = "Gagal load data";
+    console.error(err);
+  } finally {
+    spinner.style.display = "none";
+  }
 }
 
 // ======================
@@ -1533,28 +2785,36 @@ function prevPage() {
       }
     </script>
     <script>
-      function hapusPenerimaan(id){
+      async function hapusPenerimaan(id){
 
-      if(!confirm("Yakin hapus data ini?")) return;
+  if(!confirm("Yakin hapus data ini?")) return;
 
-      const formData = new FormData();
-      formData.append("token", "RAHASIA123");
-      formData.append("action", "delete_penerimaan");
-      formData.append("id", id);
+  try {
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
-      .then(res => {
-        if(res.result === "success"){
-          alert("Berhasil dihapus");
-          loadPenerimaan();
+    const res = await fetch(
+      SUPABASE_URL + "/rest/v1/penerimaan_rs?id=eq." + id,
+      {
+        method: "DELETE",
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: "Bearer " + SUPABASE_KEY,
         }
-      });
+      }
+    );
 
+    if(!res.ok){
+      throw new Error("Gagal hapus");
     }
+
+    alert("Berhasil dihapus");
+    loadPenerimaan();
+
+  } catch(err){
+    alert("Gagal hapus data");
+    console.error(err);
+  }
+
+}
     </script>
     <script>
       function exportExcelPenerimaan() {
@@ -1663,29 +2923,32 @@ function prevPage() {
     </script>
 <!-- script tabungan -->
 <script>
-  // ==============================
-  // FORMAT RUPIAH DAN HIDDEN VALUE
-  // ==============================
-  const tabunganInput = document.getElementById("total_tabungan");
-  const tabunganHidden = document.getElementById("total_tabungan_hidden");
+// ==============================
+// FORMAT RUPIAH + HIDDEN VALUE
+// ==============================
+const tabunganInput = document.getElementById("total_tabungan");
+const tabunganHidden = document.getElementById("total_tabungan_hidden");
 
-  tabunganInput.addEventListener("input", function () {
-    let value = this.value.replace(/\D/g, ""); // hapus semua selain angka
-    tabunganHidden.value = value;             // nilai murni untuk dikirim ke server
+tabunganInput.addEventListener("input", function () {
+  let value = this.value.replace(/\D/g, "");
 
-    if (value === "") {
-      this.value = "";
-      return;
-    }
+  tabunganHidden.value = value;
 
-    // Format ribuan
-    this.value = new Intl.NumberFormat("id-ID").format(value);
-  });
+  if (!value) {
+    this.value = "";
+    return;
+  }
 
-  // ==============================
-  // SUBMIT FORM TABUNGAN
-  // ==============================
- document.getElementById("tabunganForm").addEventListener("submit", function(e){
+  this.value = new Intl.NumberFormat("id-ID").format(value);
+});
+
+
+// ==============================
+// SUBMIT (INSERT & UPDATE)
+// ==============================
+document.getElementById("tabunganForm")
+.addEventListener("submit", async function(e){
+
   e.preventDefault();
 
   if(sessionStorage.getItem("login") !== "true"){
@@ -1699,90 +2962,127 @@ function prevPage() {
   spinner.style.display = "block";
   success.style.display = "none";
 
-  const formData = new FormData(this);
-  formData.append("token", "RAHASIA123");
+  const form = this;
 
-  const editId = this.dataset.editId;
+  try {
 
-  if(editId){
-    formData.append("action", "update_tabungan");
-    formData.append("id", editId);
-  } else {
-    formData.append("action", "insert_tabungan");
+    const total = tabunganHidden.value;
+    if(!total){
+      alert("Total belum diisi!");
+      return;
+    }
+
+    const editId = form.dataset.editId;
+
+    let method = "POST";
+    let url = SUPABASE_URL + "/rest/v1/tabungan";
+
+    if(editId){
+      method = "PATCH";
+      url += "?id=eq." + editId;
+    }
+
+    const res = await fetch(url, {
+      method: method,
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json",
+        Prefer: "return=representation"
+      },
+      body: JSON.stringify({
+        bulan: Number(form.bulan.value),
+        tahun: Number(form.tahun.value),
+        total: Number(total),
+        keterangan: form.keterangan.value
+      })
+    });
+
+    if(!res.ok){
+      const err = await res.text();
+      console.error(err);
+      throw new Error("Gagal simpan");
+    }
+
+    form.reset();
+    delete form.dataset.editId;
+
+    tabunganInput.value = "";
+    tabunganHidden.value = "";
+
+    success.style.display = "block";
+
+    loadTabungan();
+
+  } catch(err){
+    console.error(err);
+    alert("Gagal simpan ke Supabase");
+  } finally {
+    spinner.style.display = "none";
   }
 
-  formData.set("total", document.getElementById("total_tabungan_hidden").value);
-
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(res => {
-    if(res.result === "success"){
-
-      this.reset();
-      delete this.dataset.editId;
-
-      document.getElementById("total_tabungan").value = "";
-      document.getElementById("total_tabungan_hidden").value = "";
-
-      success.style.display = "block";
-
-      loadTabungan();
-    }
-  })
-  .catch(err => {
-    alert("Terjadi kesalahan koneksi.");
-    console.error(err);
-  })
-  .finally(() => {
-    spinner.style.display = "none";
-  });
 });
-</script>
-    <script>
+
+
+// ==============================
+// GLOBAL STATE
+// ==============================
 let currentPageTabungan = 1;
 const perPageTabungan = 12;
 
-// ======================
-function loadTabungan() {
+
+// ==============================
+// LOAD DATA (SUPABASE)
+// ==============================
+async function loadTabungan(){
+
   const spinner = document.getElementById("spinnerLoadTabungan");
   const list = document.getElementById("listTabungan");
 
   spinner.style.display = "block";
   list.innerHTML = "";
 
-  fetch(SCRIPT_URL + "?action=get_tabungan")
-    .then(res => res.json())
-    .then(res => {
+  try {
 
-      if (res.result !== "success") {
-        list.innerHTML = "Gagal load data tabungan";
-        return;
+    const res = await fetch(
+      SUPABASE_URL + "/rest/v1/tabungan?select=*",
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: "Bearer " + SUPABASE_KEY
+        }
       }
+    );
 
-      window.tabunganCache = res.data || [];
+    const data = await res.json();
 
-      isiFilterTahunTabungan(res.data);
+    window.tabunganCache = data || [];
 
-      currentPageTabungan = 1;
-      renderTableTabungan();
-    })
-    .catch(err => {
-      list.innerHTML = "Error koneksi";
-      console.error(err);
-    })
-    .finally(() => {
-      spinner.style.display = "none";
-    });
+    isiFilterTahunTabungan(data);
+
+    currentPageTabungan = 1;
+    renderTableTabungan();
+
+  } catch(err){
+    list.innerHTML = "Gagal load data";
+    console.error(err);
+  } finally {
+    spinner.style.display = "none";
+  }
 }
 
-// ======================
-function isiFilterTahunTabungan(data) {
-  const select = document.getElementById("filterTahunTabungan");
 
-  let tahunUnik = [...new Set(data.map(d => d.tahun))].sort((a,b)=>b-a);
+// ==============================
+// FILTER TAHUN
+// ==============================
+function isiFilterTahunTabungan(data) {
+
+  const select = document.getElementById("filterTahunTabungan");
+  if (!select) return;
+
+  let tahunUnik = [...new Set(data.map(d => d.tahun))]
+    .filter(Boolean)
+    .sort((a,b) => b - a);
 
   select.innerHTML = `<option value="">Semua Tahun</option>`;
 
@@ -1791,29 +3091,43 @@ function isiFilterTahunTabungan(data) {
   });
 }
 
-// ======================
-function renderTableTabungan() {
+
+// ==============================
+// RENDER TABLE
+// ==============================
+function renderTableTabungan(){
+
   const list = document.getElementById("listTabungan");
   let data = [...(window.tabunganCache || [])];
 
   const keyword = document.getElementById("searchTabungan").value.toLowerCase();
   const tahun = document.getElementById("filterTahunTabungan").value;
   const bulanFilter = document.getElementById("filterBulanTabungan").value;
+  const sort = document.getElementById("sortTabungan").value;
 
   const namaBulan = ["","Januari","Februari","Maret","April","Mei","Juni",
   "Juli","Agustus","September","Oktober","November","Desember"];
 
+  // SEARCH
   if(keyword){
     data = data.filter(d =>
-      (namaBulan[Number(d.bulan)] || "").toLowerCase().includes(keyword)
+      (namaBulan[Number(d.bulan)] || "").toLowerCase().includes(keyword) ||
+      String(d.tahun).includes(keyword)
     );
   }
 
-  if(tahun) data = data.filter(d => String(d.tahun) === String(tahun));
-  if(bulanFilter) data = data.filter(d => String(d.bulan) === String(bulanFilter));
+  // FILTER
+  if(tahun) data = data.filter(d => String(d.tahun) === tahun);
+  if(bulanFilter) data = data.filter(d => String(d.bulan) === bulanFilter);
 
-  data.sort((a,b)=> (b.tahun - a.tahun) || (b.bulan - a.bulan));
+  // SORT
+  data.sort((a,b)=> {
+    return sort === "desc"
+      ? (b.tahun - a.tahun || b.bulan - a.bulan)
+      : (a.tahun - b.tahun || a.bulan - b.bulan);
+  });
 
+  // PAGINATION
   const totalPage = Math.ceil(data.length / perPageTabungan) || 1;
   if(currentPageTabungan > totalPage) currentPageTabungan = totalPage;
 
@@ -1826,6 +3140,10 @@ function renderTableTabungan() {
     <div style="margin-bottom:10px;font-weight:bold;">
       Total Tabungan: Rp ${totalSemua.toLocaleString("id-ID")}
     </div>
+     <button onclick="exportExcelTabungan()" 
+    style="margin-bottom:10px;padding:6px 12px;cursor:pointer;">
+    📥 Export Excel
+  </button>
 
     <table border="1" width="100%" cellpadding="5">
       <tr>
@@ -1867,13 +3185,82 @@ function renderTableTabungan() {
   list.innerHTML = html;
 }
 
-// ======================
-// LISTENER FILTER TABUNGAN (INI YANG KURANG ❗)
-// ======================
+
+// ==============================
+// EDIT
+// ==============================
+function editTabungan(id){
+
+  const data = window.tabunganCache.find(d => String(d.id) === String(id));
+  if(!data) return;
+
+  const form = document.getElementById("tabunganForm");
+
+  form.bulan.value = data.bulan;
+  form.tahun.value = data.tahun;
+  form.keterangan.value = data.keterangan || "";
+
+  tabunganInput.value = Number(data.total).toLocaleString("id-ID");
+  tabunganHidden.value = data.total;
+
+  form.dataset.editId = id;
+}
+
+
+// ==============================
+// HAPUS
+// ==============================
+async function hapusTabungan(id){
+
+  if(!confirm("Yakin hapus data ini?")) return;
+
+  try {
+
+    const res = await fetch(
+      SUPABASE_URL + "/rest/v1/tabungan?id=eq." + id,
+      {
+        method: "DELETE",
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: "Bearer " + SUPABASE_KEY
+        }
+      }
+    );
+
+    if(!res.ok) throw new Error();
+
+    alert("Berhasil dihapus");
+    loadTabungan();
+
+  } catch(err){
+    alert("Gagal hapus");
+    console.error(err);
+  }
+}
+
+
+// ==============================
+// PAGINATION
+// ==============================
+function nextPageTabungan(){
+  currentPageTabungan++;
+  renderTableTabungan();
+}
+
+function prevPageTabungan(){
+  currentPageTabungan--;
+  renderTableTabungan();
+}
+
+
+// ==============================
+// FILTER LISTENER
+// ==============================
 const filterTabunganElements = [
   "searchTabungan",
   "filterTahunTabungan",
-  "filterBulanTabungan"
+  "filterBulanTabungan",
+  "sortTabungan"
 ];
 
 filterTabunganElements.forEach(id => {
@@ -1888,81 +3275,132 @@ filterTabunganElements.forEach(id => {
   });
 });
 
-// ======================
-function nextPageTabungan(){
-  currentPageTabungan++;
-  renderTableTabungan();
+
+// ==============================
+// SET TAHUN OTOMATIS
+// ==============================
+document.getElementById("tahun_tabungan").value =
+  new Date().getFullYear();
+
+</script>
+
+<script>
+function isiFilterTahunTabungan(data) {
+
+  const select = document.getElementById("filterTahunTabungan");
+  if (!select) return;
+
+  let tahunUnik = [...new Set(data.map(d => d.tahun))]
+    .filter(Boolean)
+    .sort((a,b) => b - a);
+
+  select.innerHTML = `<option value="">Semua Tahun</option>`;
+
+  tahunUnik.forEach(t => {
+    select.innerHTML += `<option value="${t}">${t}</option>`;
+  });
+
 }
+</script>
 
-function prevPageTabungan(){
-  currentPageTabungan--;
-  renderTableTabungan();
-}
+<script>
+function exportExcelTabungan() {
 
-// ======================
-document.getElementById("total_tabungan").addEventListener("input", function () {
-  let value = this.value.replace(/\D/g, "");
-
-  if (value === "") {
-    this.value = "";
+  if (!window.tabunganCache || window.tabunganCache.length === 0) {
+    alert("Data kosong");
     return;
   }
 
-  this.value = new Intl.NumberFormat("id-ID").format(value);
-});
-</script>
+  let data = [...window.tabunganCache];
 
-<!-- script edit tabungan -->
-<script>
-  function editTabungan(id){
+  const keyword = document.getElementById("searchTabungan").value.toLowerCase();
+  const tahun = document.getElementById("filterTahunTabungan").value;
+  const bulanFilter = document.getElementById("filterBulanTabungan").value;
 
-  const data = window.tabunganCache.find(d => String(d.id) === String(id));
-  if(!data) return;
+  const namaBulan = [
+    "",
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
 
-  const form = document.getElementById("tabunganForm");
+  // FILTER (sama seperti tampilan)
+  if (keyword) {
+    data = data.filter(d =>
+      (namaBulan[Number(d.bulan)] || "").toLowerCase().includes(keyword) ||
+      String(d.tahun).includes(keyword)
+    );
+  }
 
-  form.bulan.value = data.bulan;
-  form.tahun.value = data.tahun;
-  form.keterangan.value = data.keterangan || "";
+  if (tahun) {
+    data = data.filter(d => String(d.tahun) === tahun);
+  }
 
-  document.getElementById("total_tabungan").value =
-    Number(data.total).toLocaleString("id-ID");
+  if (bulanFilter) {
+    data = data.filter(d => String(d.bulan) === bulanFilter);
+  }
 
-  document.getElementById("total_tabungan_hidden").value = data.total;
+  // SORT
+  data.sort((a, b) => b.tahun - a.tahun || b.bulan - a.bulan);
 
-  form.dataset.editId = id;
-}
-</script>
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([]);
 
-<!-- script hapus tabungan -->
- <script>
-  function hapusTabungan(id){
+  let sheetData = [];
 
-  if(!confirm("Yakin hapus data ini?")) return;
+  sheetData.push(["LAPORAN TABUNGAN"]);
+  sheetData.push([]);
 
-  const formData = new FormData();
-  formData.append("token", "RAHASIA123");
-  formData.append("action", "delete_tabungan");
-  formData.append("id", id);
+  sheetData.push([
+    "Bulan",
+    "Tahun",
+    "Total",
+    "Keterangan"
+  ]);
 
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(res => {
-    if(res.result === "success"){
-      alert("Berhasil dihapus");
-      loadTabungan();
-    }
+  let startRow = sheetData.length + 1;
+
+  data.forEach(row => {
+    sheetData.push([
+      namaBulan[Number(row.bulan)],
+      row.tahun,
+      Number(row.total) || 0,
+      row.keterangan || "-"
+    ]);
   });
+
+  let lastRow = sheetData.length;
+
+  // TOTAL
+  sheetData.push([
+    "",
+    "TOTAL",
+    { f: `SUM(C${startRow}:C${lastRow})` },
+    ""
+  ]);
+
+  XLSX.utils.sheet_add_aoa(ws, sheetData, { origin: "A1" });
+
+  // FORMAT RUPIAH
+  for (let i = startRow - 1; i <= lastRow; i++) {
+    let cell = XLSX.utils.encode_cell({ r: i, c: 2 }); // kolom C
+    if (ws[cell]) {
+      ws[cell].t = 'n';
+      ws[cell].z = '"Rp"#,##0';
+    }
+  }
+
+  ws["!cols"] = [
+    { wch: 15 }, // Bulan
+    { wch: 10 }, // Tahun
+    { wch: 18 }, // Total
+    { wch: 30 }  // Keterangan
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, "Tabungan");
+
+  XLSX.writeFile(wb, "Laporan_Tabungan.xlsx");
 }
- </script>
- <!-- tahun tabungan -->
-  <script>
-    // set tahun otomatis tabungan
-document.getElementById("tahun_tabungan").value = new Date().getFullYear();
-  </script>
+</script>
           <!-- script logout -->
     <script>
       function logout(auto = false){
@@ -2010,178 +3448,582 @@ document.getElementById("tahun_tabungan").value = new Date().getFullYear();
     }
     </script>
 
-<!-- foto -->
-    <script>
 
-      let fotoBase64List = [];
+<script>
+// set tahun otomatis saat halaman dibuka
+document.getElementById("tahun_input").value = new Date().getFullYear();
+</script>
 
-      document.getElementById("foto_operasi").addEventListener("change", async function(){
+<script>
+const SUPABASE_URL = "https://bicgneywlttowehtkyro.supabase.co";
+const SUPABASE_KEY = "sb_publishable_fVW5CAXTYzLjFeWruAds2Q_dGXNZV5C";
 
-        const files = this.files;
-        const preview = document.getElementById("previewFoto");
-
-        preview.innerHTML = "";
-        fotoBase64List = [];
-
-        if(!files.length) return;
-
-        if(files.length > 5){
-          alert("Maksimal 5 foto");
-          this.value = "";
-          return;
-        }
-
-        for(const file of files){
-
-          const base64 = await compressImage(file);
-
-          fotoBase64List.push(base64);
-
-          const img = document.createElement("img");
-          img.src = base64;
-          img.style.width = "100px";
-          img.style.margin = "5px";
-          img.style.borderRadius = "5px";
-
-          preview.appendChild(img);
-        }
-
-      });
+let fotoFiles = [];
 
 
-     async function compressImage(file){
+// ===================== PREVIEW FOTO =====================
+document
+.getElementById("foto_operasi")
+.addEventListener("change", function () {
 
-  return new Promise(resolve => {
+  const files = this.files;
+
+  const preview =
+    document.getElementById("previewFoto");
+
+  preview.innerHTML = "";
+
+  fotoFiles = [];
+
+  if (!files.length) return;
+
+  if (files.length > 5) {
+
+    alert("Maksimal 5 foto");
+
+    this.value = "";
+
+    return;
+  }
+
+  for (let file of files) {
+
+    fotoFiles.push(file);
 
     const reader = new FileReader();
 
-    reader.onload = function(e){
+    reader.onload = function (e) {
 
-      const img = new Image();
+      const img =
+        document.createElement("img");
+
       img.src = e.target.result;
 
-      img.onload = function(){
+      img.style.width = "100px";
+      img.style.height = "100px";
+      img.style.objectFit = "cover";
+      img.style.margin = "5px";
+      img.style.borderRadius = "8px";
 
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        const maxWidth = 800;
-
-        let width = img.width;
-        let height = img.height;
-
-        if(width > maxWidth){
-          height = height * (maxWidth / width);
-          width = maxWidth;
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-
-        ctx.drawImage(img,0,0,width,height);
-
-        const compressed = canvas.toDataURL("image/jpeg",0.5);
-
-        resolve(compressed);
-
-      }
-
-    }
+      preview.appendChild(img);
+    };
 
     reader.readAsDataURL(file);
+  }
+});
 
-  });
 
-}
+// ===================== SUBMIT =====================
+async function submitFormManual() {
 
-    </script>
-  <script>
-  // set tahun otomatis saat halaman dibuka
-  document.getElementById("tahun_input").value = new Date().getFullYear();
-  </script>
-    <script>
-      const SCRIPT_URL =
-      "https://script.google.com/macros/s/AKfycby_fO-v03XzEwmEMlnev_cy9bROTxDW0SYuCgoQTRrZNGsbiTcGNH6P0Eya7DSBVrBe/exec";
+  const form =
+    document.getElementById("operasiForm");
 
-      document.getElementById("operasiForm")
-      .addEventListener("submit", function (e) {
+  const spinner =
+    document.getElementById("spinner");
 
-      e.preventDefault();
+  const successMsg =
+    document.getElementById("successMsg");
 
-      const spinner = document.getElementById("spinner");
-      const successMsg = document.getElementById("successMsg");
+  const jenis =
+    form.jenis_layanan.value;
 
-      spinner.style.display = "block";
-      successMsg.style.display = "none";
 
-      const formData = new FormData(this);
+  // ================= VALIDASI OPERASI =================
+  if(jenis === "operasi"){
 
-      formData.append("token", "RAHASIA123");
+    const jasa =
+      document.getElementById(
+        "jasa_operasi_hidden"
+      ).value;
 
-      // kirim foto baru
-      formData.append("foto_list", JSON.stringify(fotoBase64List));
+    if(!jasa){
 
-      // kirim foto lama yang masih tersisa
-      formData.append(
-      "foto_lama",
-      document.getElementById("operasiForm").dataset.fotoLama || ""
+      alert("Jasa operasi belum diisi!");
+
+      return;
+    }
+  }
+
+  // ================= VALIDASI POLI =================
+  if(jenis === "poliklinik"){
+
+    const konsultasi =
+      document.getElementById(
+        "konsultasi_hidden"
+      ).value;
+
+    const tindakan =
+      document.getElementById(
+        "tindakan_hidden"
+      ).value;
+
+    if(!konsultasi && !tindakan){
+
+      alert(
+        "Isi jasa konsultasi atau tindakan!"
       );
 
-      const editId = this.dataset.editId;
+      return;
+    }
+  }
 
-      if(editId){
-        formData.append("action", "update");
-        formData.append("id", editId);
-      }else{
-        formData.append("action", "insert"); // 🔥 INI YANG KURANG
+  spinner.style.display = "block";
+
+  successMsg.style.display = "none";
+
+  try {
+
+    // ===================== UPLOAD FOTO =====================
+    let fotoUrlsBaru = [];
+
+    for (let file of fotoFiles) {
+
+      const fileName =
+        Date.now() + "_" + file.name;
+
+      const uploadRes = await fetch(
+        SUPABASE_URL +
+        "/storage/v1/object/foto-operasi/" +
+        fileName,
+        {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization:
+              "Bearer " + SUPABASE_KEY,
+          },
+          body: file,
+        }
+      );
+
+      if (!uploadRes.ok) {
+
+        const err =
+          await uploadRes.text();
+
+        console.error(err);
+
+        throw new Error("Upload gagal");
       }
 
-      // 🔥 TAMBAH INI
-      // console.log("KIRIM FOTO:", fotoBase64List);
+      fotoUrlsBaru.push(
+        SUPABASE_URL +
+        "/storage/v1/object/public/foto-operasi/" +
+        fileName
+      );
+    }
 
-      fetch(SCRIPT_URL,{
-        method:"POST",
-        body:formData
-      })
-      .then(res=>res.json())
-      .then(data=>{
 
-      if(data.result === "success"){
+    // ===================== FOTO FINAL =====================
+    let fotoFinal = [];
 
-      this.reset();
-      delete this.dataset.editId;
+    if (form.dataset.fotoLama) {
 
-      fotoBase64List = [];
-      document.getElementById("previewFoto").innerHTML = "";
+      fotoFinal =
+        form.dataset.fotoLama
+        .split(",")
+        .filter(f => f.trim() !== "");
+    }
 
-      successMsg.style.display = "block";
+    fotoFinal =
+      fotoFinal.concat(fotoUrlsBaru);
 
-      // refresh laporan jika filter sudah ada
-      const nama_rs = document.getElementById("lap_nama_rs")?.value;
-      const tgl_awal = document.getElementById("lap_tgl_awal")?.value;
-      const tgl_akhir = document.getElementById("lap_tgl_akhir")?.value;
 
-      if(nama_rs && tgl_awal && tgl_akhir){
-      getLaporan();
-      }
+    // ===================== MODE =====================
+    const editId =
+      form.dataset.editId;
 
-      }else{
+    let method = "POST";
 
-      alert("Gagal menyimpan data.");
-      console.log(data);
+    let url =
+      SUPABASE_URL +
+      "/rest/v1/data_operasi";
 
-      }
+    if (editId) {
 
-      })
-      .catch(err=>{
-      alert("Terjadi kesalahan koneksi.");
-      console.error(err);
-      })
-      .finally(()=>{
-      spinner.style.display="none";
-      });
+      method = "PATCH";
 
-      });
+      url += "?id=eq." + editId;
+    }
+
+
+    // ===================== PAYLOAD =====================
+    const payload = {
+
+      nama_rs:
+        form.nama_rs.value,
+
+      tanggal_operasi:
+        form.tanggal_operasi.value,
+
+      nama_pasien:
+        form.nama_pasien.value,
+
+      diagnosa:
+        form.diagnosa.value,
+
+      tindakan:
+        form.tindakan.value,
+
+      jaminan:
+        form.jaminan.value,
+
+      jenis_layanan:
+        jenis,
+
+      // ================= OPERASI =================
+      jasa_operasi:
+        jenis === "operasi"
+        ? Number(
+            document.getElementById(
+              "jasa_operasi_hidden"
+            ).value || 0
+          )
+        : null,
+
+      // ================= POLIKLINIK =================
+      konsultasi:
+        jenis === "poliklinik"
+        ? Number(
+            document.getElementById(
+              "konsultasi_hidden"
+            ).value || 0
+          )
+        : null,
+
+      diskon_konsultasi:
+        jenis === "poliklinik"
+        ? Number(
+            document.getElementById(
+              "diskon_konsultasi"
+            ).value || 0
+          )
+        : 0,
+
+      tindakan_jasa:
+        jenis === "poliklinik"
+        ? Number(
+            document.getElementById(
+              "tindakan_hidden"
+            ).value || 0
+          )
+        : null,
+
+      diskon_tindakan:
+        jenis === "poliklinik"
+        ? Number(
+            document.getElementById(
+              "diskon_tindakan"
+            ).value || 0
+          )
+        : 0,
+
+      foto_urls:
+        fotoFinal.join(",")
+    };
+
+
+    // ===================== SAVE =====================
+    const saveRes = await fetch(url, {
+
+      method: method,
+
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization:
+          "Bearer " + SUPABASE_KEY,
+
+        "Content-Type":
+          "application/json",
+
+        Prefer:
+          "return=representation",
+      },
+
+      body: JSON.stringify(payload),
+    });
+
+    const result =
+      await saveRes.text();
+
+    console.log(result);
+
+    if (!saveRes.ok) {
+
+      throw new Error(
+        "Gagal simpan data"
+      );
+    }
+
+
+    // ===================== SUCCESS =====================
+    successMsg.style.display = "block";
+
+    form.reset();
+
+    delete form.dataset.editId;
+    delete form.dataset.fotoLama;
+
+    fotoFiles = [];
+
+    document
+    .getElementById("previewFoto")
+    .innerHTML = "";
+
+    document
+    .getElementById("jasa_operasi_hidden")
+    .value = "";
+
+    document
+    .getElementById("konsultasi_hidden")
+    .value = "";
+
+    document
+    .getElementById("tindakan_hidden")
+    .value = "";
+
+    document
+    .getElementById("jenis_layanan")
+    .dispatchEvent(new Event("change"));
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert(
+      "Gagal upload / simpan data"
+    );
+
+  } finally {
+
+    spinner.style.display = "none";
+  }
+}
+
+
+// ===================== EDIT DATA =====================
+function editData(id){
+
+  const data =
+    window.laporanCache.find(
+      d => String(d.id) === String(id)
+    );
+
+  if(!data){
+
+    alert("Data tidak ditemukan");
+
+    return;
+  }
+
+  showForm();
+
+  const form =
+    document.getElementById("operasiForm");
+
+  form.nama_rs.value =
+    data.nama_rs || "";
+
+  form.tanggal_operasi.value =
+    data.tanggal_operasi || "";
+
+  form.nama_pasien.value =
+    data.nama_pasien || "";
+
+  form.diagnosa.value =
+    data.diagnosa || "";
+
+  form.tindakan.value =
+    data.tindakan || "";
+
+  form.jaminan.value =
+    data.jaminan || "";
+
+  const jenis =
+    data.jenis_layanan || "operasi";
+
+  form.jenis_layanan.value =
+    jenis;
+
+  document
+  .getElementById("jenis_layanan")
+  .dispatchEvent(new Event("change"));
+
+  // ================= OPERASI =================
+  if(jenis === "operasi"){
+
+    document
+    .getElementById("jasa_operasi")
+    .value =
+      Number(
+        data.jasa_operasi || 0
+      ).toLocaleString("id-ID");
+
+    document
+    .getElementById("jasa_operasi_hidden")
+    .value =
+      data.jasa_operasi || 0;
+  }
+
+  // ================= POLIKLINIK =================
+  else {
+
+    document
+    .getElementById("konsultasi")
+    .value =
+      Number(
+        data.konsultasi || 0
+      ).toLocaleString("id-ID");
+
+    document
+    .getElementById("konsultasi_hidden")
+    .value =
+      data.konsultasi || 0;
+
+    document
+    .getElementById("diskon_konsultasi")
+    .value =
+      data.diskon_konsultasi || 0;
+
+    document
+    .getElementById("tindakan_jasa")
+    .value =
+      Number(
+        data.tindakan_jasa || 0
+      ).toLocaleString("id-ID");
+
+    document
+    .getElementById("tindakan_hidden")
+    .value =
+      data.tindakan_jasa || 0;
+
+    document
+    .getElementById("diskon_tindakan")
+    .value =
+      data.diskon_tindakan || 0;
+  }
+
+  form.dataset.editId =
+    data.id;
+
+  // ================= FOTO =================
+  const preview =
+    document.getElementById(
+      "previewFoto"
+    );
+
+  preview.innerHTML = "";
+
+  let fotoArray = [];
+
+  if(data.foto_urls){
+
+    fotoArray =
+      data.foto_urls.split(",");
+
+    fotoArray.forEach((url,index)=>{
+
+      const box =
+        document.createElement("div");
+
+      box.style.display =
+        "inline-block";
+
+      box.style.position =
+        "relative";
+
+      box.style.margin =
+        "5px";
+
+      const img =
+        document.createElement("img");
+
+      img.src = url;
+
+      img.style.width = "80px";
+      img.style.height = "80px";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "6px";
+      img.style.cursor = "pointer";
+
+      img.onclick =
+        () => bukaFoto(url);
+
+      const btn =
+        document.createElement("div");
+
+      btn.innerHTML = "✖";
+
+      btn.style.position =
+        "absolute";
+
+      btn.style.top = "0";
+
+      btn.style.right = "0";
+
+      btn.style.background =
+        "red";
+
+      btn.style.color =
+        "white";
+
+      btn.style.padding =
+        "2px 5px";
+
+      btn.style.cursor =
+        "pointer";
+
+      btn.style.borderRadius =
+        "0 6px 0 6px";
+
+      btn.onclick = function(){
+
+        fotoArray.splice(index,1);
+
+        form.dataset.fotoLama =
+          fotoArray.join(",");
+
+        box.remove();
+      };
+
+      box.appendChild(img);
+
+      box.appendChild(btn);
+
+      preview.appendChild(box);
+    });
+  }
+
+  form.dataset.fotoLama =
+    fotoArray.join(",");
+}
+
+
+// ===================== MODAL FOTO =====================
+function bukaFoto(url){
+
+  const modal =
+    document.getElementById(
+      "modalFoto"
+    );
+
+  const img =
+    document.getElementById(
+      "modalFotoImg"
+    );
+
+  img.src = url;
+
+  modal.style.display = "flex";
+}
+
+document
+.getElementById("modalFoto")
+.onclick = function(){
+
+  this.style.display = "none";
+};
 </script>
 
     <!-- view foto -->
@@ -2215,6 +4057,8 @@ document.querySelectorAll('.nav-menu button').forEach(btn => {
   });
 });
 </script>
+
+
 
    
   </body>
